@@ -11,7 +11,7 @@ window.BANGTAO = {
     kneedrive:['Standing banded knee drive',3,12,'reps-side','Drive knee toward teep chamber height. Stay tall and control the return.','yO292ml-IVU'],
     straightleg:['Seated straight leg lift',3,12,'weight-side','Sit tall. Keep knee straight and lift heel with control. Add load only if you can maintain the same clean motion.','iWGr0-dXqww'],
     teephold:['Teep chamber hold',3,25,'timed-side','Bring knee high into teep chamber and hold tall.','s3uW3XSOdvA'],
-    tib:['Tibialis raise',3,15,'reps','Heels down. Pull toes toward shins.','boFuKPm5w2Q'],
+    tib:['Tibialis raise',3,15,'reps','Up as high as you can, down toward the big toe, up as high as you can, down toward the pinky toe. Repeat.','boFuKPm5w2Q'],
     split:['Rear foot elevated split squat',3,10,'weight-side','Controlled depth.','bwhl_9jN_3o'],
     slrdl:['Single leg RDL',3,10,'weight-side','Keep hips square.','Zfr6wizR8rs'],
     row:['Cable row',3,12,'weight','Keep ribs stacked.','UCXxvVItLoM'],
@@ -24,11 +24,16 @@ window.BANGTAO = {
     balance:['Single leg reach balance',3,30,'timed-foot','Stand on one foot. Move the other foot forward, side, and back with control for the full 30 seconds.','UoMSMdMKfBY'],
     hipstretch:['Half kneeling hip flexor stretch',2,30,'timed-side','Tuck pelvis, squeeze rear glute and move forward gently.','gqoPYLUgP48'],
     towel:['Towel scrunch',3,1,'towel-both','Place both feet on the towel and scrunch it toward you with both sets of toes. One full towel equals one set.','cnflVnYyGpc'],
+    bandhop:['In and out banded hops',3,20,'timed','Band around the ankles. From an athletic stance, rapidly jump the feet out wide and snap them back in against the band. Stay light and quick.','mGKP8uonWas'],
+    stancepush:['Explosive stance push offs',3,20,'timed','Band around the ankles. From your fight stance, bounce and drive forward and backward with quick push steps while maintaining stance.','mGKP8uonWas'],
+    bandhighknee:['Banded high knee drives',3,20,'timed','Band around the midfoot or arches. Rapidly drive one knee toward waist height, alternate sides, and stay tall.','mGKP8uonWas'],
+    switchknees:['Banded continuous switch knees',3,20,'timed','Band around the midfoot or arches. Explosively alternate knee drives with fast foot switches in a steady combat rhythm.','mGKP8uonWas'],
     shadow:['Muay Thai shadowboxing',3,180,'timed','Relaxed technical rounds. Minimal bouncing while the foot is irritated.','s3uW3XSOdvA']
   },
   rehab:['plantar','straight','ballraise','balance','hipstretch','towel'],
   strengthA:['squat','rdl','bench','pull','legraise','kneedrive','tib'],
   strengthB:['split','slrdl','row','copenhagen','pullup','straightleg','farmer','standingcalf'],
+  bikeDrills:['bandhop','stancepush','bandhighknee','switchknees'],
   rotations:['A','B','bike','shadow','kb','recovery'],
-  labels:{A:'Strength A',B:'Strength B',bike:'Stationary bike',shadow:'Shadowboxing + teep',kb:'Kickboxing',recovery:'Recovery'}
+  labels:{A:'Strength A',B:'Strength B',bike:'Stationary bike + band drills',shadow:'Shadowboxing + teep',kb:'Kickboxing',recovery:'Recovery'}
 };
