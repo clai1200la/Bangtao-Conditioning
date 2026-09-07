@@ -19,7 +19,7 @@ window.BANGTAO = {
     farmer:['Farmer carry',3,30,'carry-weight','Hold equal weight in both hands and walk tall. Track the weight in each hand.','rt17lmnaLSM'],
     standingcalf:['Standing calf raise',3,12,'weight','Use support if needed. Rise through the ball of the foot, pause at the top, and lower slowly. Add load as tolerated.','gwLzBJYoWlI'],
     plantar:['Plantar fascia stretch',3,30,'timed-foot','Cross the foot over the opposite knee and gently pull the toes toward the shin.','VwbDxqV_XhA'],
-    straight:['Straight knee calf stretch',3,30,'timed-foot','Use your slant board. Keep the knee straight and heel down. Use a gentle angle rather than forcing the stretch.','eleOWUIwtco'],
+    straight:['Slant board calf stretch',3,30,'timed','Stand with both feet on the slant board, keep both knees straight and both heels down. Use a gentle angle rather than forcing the stretch.','VmbNSq_kzGQ'],
     ballraise:['Ball squeeze heel raise',3,12,'reps','Place a small ball between both heels, squeeze gently, and raise both heels together with control.','IzXhuC6WTAA'],
     balance:['Single leg reach balance',3,30,'timed-foot','Stand on one foot. Move the other foot forward, side, and back with control for the full 30 seconds.','UoMSMdMKfBY'],
     hipstretch:['Half kneeling hip flexor stretch',2,30,'timed-side','Tuck pelvis, squeeze rear glute and move forward gently.','gqoPYLUgP48'],
