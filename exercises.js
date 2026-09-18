@@ -13,7 +13,8 @@ window.BANGTAO = {
     teephold:['Teep chamber hold',3,25,'timed-side','Bring knee high into teep chamber and hold tall.','s3uW3XSOdvA'],
     tib:['Tibialis raise',3,15,'reps','Up as high as you can, down toward the big toe, up as high as you can, down toward the pinky toe. Repeat.','boFuKPm5w2Q'],
     split:['Rear foot elevated split squat',3,10,'weight-side','Controlled depth.','bwhl_9jN_3o'],
-    slrdl:['Single leg RDL',3,10,'weight-side','Keep hips square.','Zfr6wizR8rs'],
+    slrdl:['Single leg RDL',3,10,'weight-side','Keep hips square. Use light weight or fingertip support if balance limits the movement. Treat this as controlled balance practice, not a max strength exercise.','Zfr6wizR8rs'],
+    swing:['Kettlebell swing',3,12,'weight','Explosive hip snap, not a squat. Keep the sets crisp and stop before fatigue slows the swing.','YSxHifyI6s8'],
     row:['Cable row',3,12,'weight','Keep ribs stacked.','UCXxvVItLoM'],
     copenhagen:['Copenhagen plank',3,30,'timed-side','Keep hips stacked and use a shorter lever if needed.','1NNqUQvMYGc'],
     farmer:['Farmer carry',3,30,'carry-weight','Hold equal weight in both hands and walk tall. Track the weight in each hand.','rt17lmnaLSM'],
@@ -32,7 +33,7 @@ window.BANGTAO = {
   },
   rehab:['plantar','straight','ballraise','balance','hipstretch','towel'],
   strengthA:['squat','rdl','bench','pull','legraise','kneedrive','tib'],
-  strengthB:['split','slrdl','row','copenhagen','pullup','straightleg','farmer','standingcalf'],
+  strengthB:['split','slrdl','swing','row','copenhagen','pullup','straightleg','farmer','standingcalf'],
   bikeDrills:['bandhop','stancepush','bandhighknee','switchknees'],
   rotations:['A','B','bike','shadow','kb','recovery'],
   labels:{A:'Strength A',B:'Strength B',bike:'Stationary bike + band drills',shadow:'Shadowboxing + teep',kb:'Kickboxing',recovery:'Recovery'}
