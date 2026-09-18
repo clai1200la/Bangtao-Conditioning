@@ -29,12 +29,18 @@ window.BANGTAO = {
     stancepush:['Explosive stance push offs',3,20,'timed','Band around the ankles. From your fight stance, bounce and drive forward and backward with quick push steps while maintaining stance.','mGKP8uonWas'],
     bandhighknee:['Banded high knee drives',3,20,'timed','Band around the midfoot or arches. Rapidly drive one knee toward waist height, alternate sides, and stay tall.','mGKP8uonWas'],
     switchknees:['Banded continuous switch knees',3,20,'timed','Band around the midfoot or arches. Explosively alternate knee drives with fast foot switches in a steady combat rhythm.','mGKP8uonWas'],
-    shadow:['Muay Thai shadowboxing',3,180,'timed','Relaxed technical rounds. Minimal bouncing while the foot is irritated.','s3uW3XSOdvA']
+    shadow:['Muay Thai shadowboxing',3,180,'timed','Relaxed technical rounds. Minimal bouncing while the foot is irritated.','s3uW3XSOdvA'],
+    shoulderpress:['Dumbbell shoulder press',3,10,'weight','Press with control. Keep 2 to 3 reps in reserve; this is accessory work, not a max-effort lift.','qEwKCR5JCog'],
+    lateralraise:['Dumbbell lateral raise',3,15,'weight','Raise with control to about shoulder height. Keep the weight light enough to avoid swinging.','3VcKaXpzqRo'],
+    curl:['Dumbbell biceps curl',3,12,'weight','Keep elbows controlled and avoid using momentum.','ykJmrZ5v0Oo'],
+    pushdown:['Cable triceps pushdown',3,12,'weight','Keep elbows near your sides and fully extend without leaning into the movement.','2-LAMcpzODU'],
+    jumprope:['Jump rope',5,60,'timed','Easy to moderate rhythm for conditioning. Keep the bounce low. If plantar pain is elevated or worse the next morning, substitute easy bike work.','u3zgHI8QnqE']
   },
   rehab:['plantar','straight','ballraise','balance','hipstretch','towel'],
   strengthA:['squat','rdl','bench','pull','legraise','kneedrive','tib'],
   strengthB:['split','slrdl','swing','row','copenhagen','pullup','straightleg','farmer','standingcalf'],
+  upper:['shoulderpress','lateralraise','curl','pushdown','jumprope'],
   bikeDrills:['bandhop','stancepush','bandhighknee','switchknees'],
-  rotations:['A','B','bike','shadow','kb','recovery'],
-  labels:{A:'Strength A',B:'Strength B',bike:'Stationary bike + band drills',shadow:'Shadowboxing + teep',kb:'Kickboxing',recovery:'Recovery'}
+  rotations:['A','B','upper','bike','shadow','kb','recovery'],
+  labels:{A:'Strength A',B:'Strength B',upper:'Upper + cardio',bike:'Stationary bike + band drills',shadow:'Shadowboxing + teep',kb:'Kickboxing',recovery:'Recovery'}
 };
