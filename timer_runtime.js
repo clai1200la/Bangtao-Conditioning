@@ -9,7 +9,6 @@
  function startBeep(){tone(1250,.12,.18);tone(1650,.14,.18,.14)}
  function alarm(){tone(1100,.18,.24);tone(1500,.18,.24,.22);tone(1950,.28,.26,.44);try{navigator.vibrate?.([180,80,180])}catch{}}
  window.BangtaoAudio={unlock,cue,start:startBeep,alarm,resume:()=>{if(ctx&&ctx.state==='running'){const old=ctx;setTimeout(()=>old.suspend().then(()=>old.resume()).catch(()=>{}),30)}else freshAudio()}};
- ['pointerdown','touchstart','click'].forEach(e=>document.addEventListener(e,unlock,{once:true,capture:true}));
  function clear(id){const t=active[id];if(!t)return;clearInterval(t.i);delete active[id]}
  function finish(id,late=false){const t=active[id];if(!t)return;clearInterval(t.i);delete active[id];const b=document.getElementById(id);if(b){b.classList.remove('running');const x=b.querySelector('.count');if(x)x.textContent='Done'}const box=document.getElementById(t.done);if(box&&!box.checked){box.checked=true;box.dispatchEvent(new Event('change',{bubbles:true}))}alarm()}
  function refresh(id){const t=active[id];if(!t)return;const b=document.getElementById(id);if(!b){clear(id);return}const now=Date.now();if(now>=t.end){finish(id,true);return}const x=b.querySelector('.count');if(now<t.start){if(x)x.textContent='Ready '+Math.max(1,Math.ceil((t.start-now)/1000));return}const r=Math.ceil((t.end-now)/1000);if(x)x.textContent=fmt(r)}
@@ -18,5 +17,4 @@
  let bike=null;
  window.bikeStart=min=>{unlock();const b=document.getElementById('bike_main');if(!b)return;if(bike){clearInterval(bike.i);bike=null;b.textContent=`Start ${min}:00`;return}const start=Date.now()+3000,end=start+min*60000;cue();const update=()=>{if(!bike)return;const now=Date.now();if(now>=end){clearInterval(bike.i);bike=null;b.textContent='Done';const a=document.getElementById('bike_actual'),d=document.getElementById('bike_done');if(a)a.value=min;if(d){d.checked=true;d.dispatchEvent(new Event('change',{bubbles:true}))}alarm();return}if(now<start)b.textContent='Ready '+Math.max(1,Math.ceil((start-now)/1000));else b.textContent=fmt(Math.ceil((end-now)/1000))};setTimeout(()=>bike&&cue(),1000);setTimeout(()=>bike&&cue(),2000);setTimeout(()=>bike&&startBeep(),3000);bike={start,end,i:setInterval(update,200)};update()};
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){window.BangtaoAudio.resume();Object.keys(active).forEach(refresh);if(bike){const b=document.getElementById('bike_main');if(Date.now()>=bike.end){clearInterval(bike.i);const min=Math.round((bike.end-bike.start)/60000);bike=null;if(b)b.textContent='Done';const a=document.getElementById('bike_actual'),d=document.getElementById('bike_done');if(a)a.value=min;if(d){d.checked=true;d.dispatchEvent(new Event('change',{bubbles:true}))}alarm()}}}});
- setAmbient();
 })();
