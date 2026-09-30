@@ -19,7 +19,8 @@ window.BANGTAO = {
     copenhagen:['Copenhagen plank',3,30,'timed-side','Keep hips stacked and use a shorter lever if needed.','1NNqUQvMYGc'],
     farmer:['Farmer carry',3,30,'carry-weight','Hold equal weight in both hands and walk tall. Track the weight in each hand.','rt17lmnaLSM'],
     standingcalf:['Standing calf raise from floor',3,12,'weight','Use support if needed. Start and finish on flat ground. Rise through the ball of the foot, pause at the top, and lower slowly. Do not let the heel drop below floor level while the Achilles insertion is irritated.','gwLzBJYoWlI'],
-    plantar:['Plantar fascia stretch',3,30,'timed-foot','Cross the foot over the opposite knee and gently pull the toes toward the shin.','VwbDxqV_XhA'],
+    plantar:['Plantar fascia stretch',3,30,'timed-foot','Cross the foot over the opposite knee and gently pull the toes toward the shin. Keep the ankle relaxed so you stretch the plantar fascia without forcing the Achilles.','VwbDxqV_XhA'],
+    towel:['Towel scrunch',3,1,'towel-both','Use the toes to scrunch the towel while keeping the heel planted. This trains the foot intrinsics with very little Achilles loading. Stop if it increases heel pain.','cnflVnYyGpc'],
     achillesiso:['Achilles calf raise isometric',4,30,'timed','On flat ground, rise onto both toes and hold. Keep the heel above floor level without bouncing. Use daily as tolerated for symptom-friendly loading. Stop if insertion pain clearly increases.','gwLzBJYoWlI'],
     seatedcalf:['Seated calf raise',3,15,'weight','Do 3 to 4 days per week. Keep the foot flat enough that the heel starts from neutral, then raise the heel slowly. Add load gradually. Skip this if the Achilles is clearly worse the next morning.','JbyjNymZOt0'],
     bandhop:['In and out banded hops',3,20,'timed','High Achilles load. Skip while insertion pain is 3/10 or higher or worse the next morning. When cleared, stay light and quick.','mGKP8uonWas'],
@@ -33,7 +34,7 @@ window.BANGTAO = {
     pushdown:['Cable triceps pushdown',3,12,'weight','Keep elbows near your sides and fully extend without leaning into the movement.','2-LAMcpzODU'],
     jumprope:['Jump rope',5,60,'timed','High repetitive Achilles load. Skip if Achilles insertion pain is 3/10 or higher, plantar pain is elevated, or either area is worse the next morning. Substitute easy bike work.','u3zgHI8QnqE']
   },
-  rehab:['plantar','achillesiso','seatedcalf','standingcalf'],
+  rehab:['plantar','towel','achillesiso','seatedcalf','standingcalf'],
   strengthA:['squat','rdl','bench','pull','legraise','kneedrive','tib'],
   strengthB:['split','slrdl','swing','row','copenhagen','pullup','straightleg','farmer','standingcalf'],
   upper:['shoulderpress','lateralraise','curl','pushdown','jumprope'],
