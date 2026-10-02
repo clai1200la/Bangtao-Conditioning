@@ -16,6 +16,7 @@ window.BANGTAO = {
     slrdl:['Single leg RDL',3,10,'weight-side','Keep hips square. Use light weight or fingertip support if balance limits the movement. Treat this as controlled balance practice, not a max strength exercise.','Zfr6wizR8rs'],
     swing:['Kettlebell swing',3,12,'weight','Explosive hip snap, not a squat. Keep the sets crisp and stop before fatigue slows the swing.','YSxHifyI6s8'],
     row:['Cable row',3,12,'weight','Keep ribs stacked.','UCXxvVItLoM'],
+    crunch:['Crunch',2,15,'reps','Small conditioning-focused core dose. Keep the movement controlled, exhale as you curl up, and stop well before neck or low-back strain.','Xyd_fa5zoEU'],
     plank:['Plank',2,30,'timed','No equipment needed. Brace your core, squeeze glutes, and keep a straight line from shoulders through heels.','ASdvN_XEl_c'],
     sideplank:['Side plank',2,30,'timed-side','Each set includes both sides: 30 seconds left + 30 seconds right. Keep hips stacked and body in a straight line. Use the knees-down version if needed.','iNbH7_edNI8'],
     farmer:['Farmer carry',3,30,'carry-weight','Hold equal weight in both hands and walk tall. Track the weight in each hand.','rt17lmnaLSM'],
@@ -40,11 +41,11 @@ window.BANGTAO = {
     pushdown:['Cable triceps pushdown',3,12,'weight','Keep elbows near your sides and fully extend without leaning into the movement.','2-LAMcpzODU'],
     jumprope:['Jump rope',5,60,'timed','High repetitive Achilles load. Skip if Achilles insertion pain is 3/10 or higher, plantar pain is elevated, or either area is worse the next morning. Substitute easy bike work.','u3zgHI8QnqE']
   },
-  rehab:['homecalf','tib','plantar','shortfoot','toeyoga','balance','anklemobility'],
-  strengthA:['squat','rdl','bench','pull','legraise','kneedrive'],
+  rehab:['homecalf','tib','plantar','shortfoot','anklemobility'],
+  strengthA:['squat','rdl','bench','pull','legraise','kneedrive','crunch'],
   strengthB:['split','slrdl','swing','row','plank','sideplank','pullup','farmer'],
-  upper:['shoulderpress','lateralraise','curl','pushdown','jumprope'],
-  bikeDrills:['bandhop','stancepush','bandhighknee','switchknees'],
+  upper:['shoulderpress','lateralraise','curl','pushdown'],
+  bikeDrills:[],
   rotations:['A','B','upper','bike','shadow','kb','recovery'],
   labels:{A:'Strength A',B:'Strength B',upper:'Upper + cardio',bike:'Stationary bike + band drills',shadow:'Shadowboxing + teep',kb:'Kickboxing',recovery:'Recovery'}
 };
