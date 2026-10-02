@@ -12,7 +12,7 @@ window.BANGTAO = {
     straightleg:['Seated straight leg lift',3,12,'weight-side','Sit tall. Keep knee straight and lift heel with control. Add load only if you can maintain the same clean motion.','iWGr0-dXqww'],
     teephold:['Teep chamber hold',3,25,'timed-side','Bring knee high into teep chamber and hold tall.','s3uW3XSOdvA'],
     tib:['Tibialis raise',3,15,'reps','Lean against a wall with heels planted. Lift the toes toward the shins, pause, then lower with control.','boFuKPm5w2Q'],
-    split:['Rear foot elevated split squat',3,10,'weight-side','Controlled depth.','bwhl_9jN_3o'],
+    split:['Regular split squat',3,10,'weight-side','Keep both feet on the floor. Use the rear leg mainly for balance, stay controlled, and keep 2 to 3 reps in reserve.','SGHnCftrZkA'],
     slrdl:['Single leg RDL',3,10,'weight-side','Keep hips square. Use light weight or fingertip support if balance limits the movement. Treat this as controlled balance practice, not a max strength exercise.','Zfr6wizR8rs'],
     swing:['Kettlebell swing',3,12,'weight','Explosive hip snap, not a squat. Keep the sets crisp and stop before fatigue slows the swing.','YSxHifyI6s8'],
     row:['Cable row',3,12,'weight','Keep ribs stacked.','UCXxvVItLoM'],
