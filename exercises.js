@@ -40,8 +40,8 @@ window.BANGTAO = {
     jumprope:['Jump rope',5,60,'timed','High repetitive Achilles load. Skip if Achilles insertion pain is 3/10 or higher, plantar pain is elevated, or either area is worse the next morning. Substitute easy bike work.','u3zgHI8QnqE']
   },
   rehab:['homecalf','tib','plantar','shortfoot','toeyoga','balance','anklemobility'],
-  strengthA:['squat','rdl','bench','pull','legraise','kneedrive','tib'],
-  strengthB:['split','slrdl','swing','row','copenhagen','pullup','straightleg','farmer','standingcalf'],
+  strengthA:['squat','rdl','bench','pull','legraise','kneedrive'],
+  strengthB:['split','slrdl','swing','row','copenhagen','pullup','straightleg','farmer'],
   upper:['shoulderpress','lateralraise','curl','pushdown','jumprope'],
   bikeDrills:['bandhop','stancepush','bandhighknee','switchknees'],
   rotations:['A','B','upper','bike','shadow','kb','recovery'],
