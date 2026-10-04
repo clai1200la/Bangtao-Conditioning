@@ -42,7 +42,7 @@ window.BANGTAO = {
     pushdown:['Cable triceps pushdown',3,12,'weight','Keep elbows near your sides and fully extend without leaning into the movement.','2-LAMcpzODU'],
     jumprope:['Jump rope',5,60,'timed','High repetitive Achilles load. Skip if Achilles insertion pain is 3/10 or higher, plantar pain is elevated, or either area is worse the next morning. Substitute easy bike work.','u3zgHI8QnqE']
   },
-  rehab:['homecalf','tib','plantar','shortfoot','anklemobility'],
+  rehab:['homecalf','tib','plantar','towel','anklemobility'],
   strengthA:['squat','rdl','bench','pull','legraise','kneedrive','crunch'],
   strengthB:['split','slrdl','swing','row','plank','sideplank','pullup','farmer'],
   upper:['shoulderpress','lateralraise','bentlateral','curl','pushdown'],
