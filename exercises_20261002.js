@@ -18,6 +18,7 @@ window.BANGTAO = {
     row:['Cable row',3,12,'weight','Keep ribs stacked.','UCXxvVItLoM'],
     pushup:['Push-up',2,20,'reps','Camp-prep upper-body endurance. Keep a rigid trunk and stop before form breaks down.','IODxDxX7oi4'],
     crunch:['Crunch',3,15,'reps','Small conditioning-focused core dose. Keep the movement controlled, exhale as you curl up, and stop well before neck or low-back strain.','Xyd_fa5zoEU'],
+    dailyplank:['Daily plank',1,60,'timed','Camp-prep trunk endurance. Brace firmly and keep a straight line from shoulders through heels. Stop if form breaks down.','ASdvN_XEl_c'],
     plank:['Plank',2,30,'timed','No equipment needed. Brace your core, squeeze glutes, and keep a straight line from shoulders through heels.','ASdvN_XEl_c'],
     sideplank:['Side plank',2,30,'timed-side','Each set includes both sides: 30 seconds left + 30 seconds right. Keep hips stacked and body in a straight line. Use the knees-down version if needed.','iNbH7_edNI8'],
     farmer:['Farmer carry',3,30,'carry-weight','Hold equal weight in both hands and walk tall. Track the weight in each hand.','rt17lmnaLSM'],
@@ -43,7 +44,7 @@ window.BANGTAO = {
     pushdown:['Cable triceps pushdown',3,12,'weight','Keep elbows near your sides and fully extend without leaning into the movement.','2-LAMcpzODU'],
     jumprope:['Jump rope',5,60,'timed','High repetitive Achilles load. Skip if Achilles insertion pain is 3/10 or higher, plantar pain is elevated, or either area is worse the next morning. Substitute easy bike work.','u3zgHI8QnqE']
   },
-  rehab:['homecalf','tib','plantar','towel','anklemobility','pushup','crunch','plank'],
+  rehab:['homecalf','tib','plantar','towel','anklemobility','pushup','crunch','dailyplank'],
   strengthA:['squat','rdl','bench','pull','legraise','kneedrive'],
   strengthB:['split','slrdl','swing','row','plank','sideplank','pullup','farmer'],
   upper:['shoulderpress','lateralraise','bentlateral','curl','pushdown'],
