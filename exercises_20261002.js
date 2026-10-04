@@ -37,6 +37,7 @@ window.BANGTAO = {
     shadow:['Muay Thai shadowboxing',3,180,'timed','Relaxed technical rounds. Minimal bouncing while the foot is irritated.','s3uW3XSOdvA'],
     shoulderpress:['Dumbbell shoulder press',3,10,'weight','Press with control. Keep 2 to 3 reps in reserve; this is accessory work, not a max-effort lift.','qEwKCR5JCog'],
     lateralraise:['Dumbbell lateral raise',3,15,'weight','Raise with control to about shoulder height. Keep the weight light enough to avoid swinging.','3VcKaXpzqRo'],
+    bentlateral:['Bent-over dumbbell lateral raise',3,15,'weight','Hinge forward with a neutral spine and soft elbows. Raise the dumbbells out and slightly back with control; keep the weight light and avoid swinging.',''],
     curl:['Dumbbell biceps curl',3,12,'weight','Keep elbows controlled and avoid using momentum.','ykJmrZ5v0Oo'],
     pushdown:['Cable triceps pushdown',3,12,'weight','Keep elbows near your sides and fully extend without leaning into the movement.','2-LAMcpzODU'],
     jumprope:['Jump rope',5,60,'timed','High repetitive Achilles load. Skip if Achilles insertion pain is 3/10 or higher, plantar pain is elevated, or either area is worse the next morning. Substitute easy bike work.','u3zgHI8QnqE']
@@ -44,7 +45,7 @@ window.BANGTAO = {
   rehab:['homecalf','tib','plantar','shortfoot','anklemobility'],
   strengthA:['squat','rdl','bench','pull','legraise','kneedrive','crunch'],
   strengthB:['split','slrdl','swing','row','plank','sideplank','pullup','farmer'],
-  upper:['shoulderpress','lateralraise','curl','pushdown'],
+  upper:['shoulderpress','lateralraise','bentlateral','curl','pushdown'],
   bikeDrills:[],
   rotations:['A','B','upper','bike','shadow','kb','recovery'],
   labels:{A:'Strength A',B:'Strength B',upper:'Upper + cardio',bike:'Stationary bike + band drills',shadow:'Shadowboxing + teep',kb:'Kickboxing',recovery:'Recovery'}
