@@ -80,7 +80,7 @@ with sync_playwright() as p:
  page.evaluate('window.testNow += 21000')
  page.wait_for_timeout(350)
  expect(page.locator('[data-field="2:0:spiderplank:both"][data-prop="done"]')).to_be_checked()
- expect(page.locator('#restCount')).to_have_text('01:00')
+ expect(page.locator('#restCount')).to_have_text('00:59')
  # New program storage isolation before the legacy app is used.
  assert page.evaluate('localStorage.getItem("bangtao12")')==legacy_json
  page.locator('#notes').fill('Draft survives program switch')

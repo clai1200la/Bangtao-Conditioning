@@ -19,7 +19,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Barbell_Deadlift-0.jpg",
         "assets/exercises/Barbell_Deadlift-1.jpg"
       ],
-      "source": "Barbell_Deadlift"
+      "source": "Barbell_Deadlift",
+      "weightUnit": "lb"
     },
     "underhand": {
       "name": "Underhand-grip lat pulldown",
@@ -29,7 +30,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Underhand_Cable_Pulldowns-0.jpg",
         "assets/exercises/Underhand_Cable_Pulldowns-1.jpg"
       ],
-      "source": "Underhand_Cable_Pulldowns"
+      "source": "Underhand_Cable_Pulldowns",
+      "weightUnit": "lb"
     },
     "parallel": {
       "name": "Parallel-grip lat pulldown",
@@ -39,7 +41,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/V-Bar_Pulldown-0.jpg",
         "assets/exercises/V-Bar_Pulldown-1.jpg"
       ],
-      "source": "V-Bar_Pulldown"
+      "source": "V-Bar_Pulldown",
+      "weightUnit": "lb"
     },
     "seatedcurl": {
       "name": "Machine seated leg curl",
@@ -49,7 +52,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Seated_Leg_Curl-0.jpg",
         "assets/exercises/Seated_Leg_Curl-1.jpg"
       ],
-      "source": "Seated_Leg_Curl"
+      "source": "Seated_Leg_Curl",
+      "weightUnit": "lb"
     },
     "cablecurl": {
       "name": "Cable biceps curl",
@@ -59,7 +63,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Standing_Biceps_Cable_Curl-0.jpg",
         "assets/exercises/Standing_Biceps_Cable_Curl-1.jpg"
       ],
-      "source": "Standing_Biceps_Cable_Curl"
+      "source": "Standing_Biceps_Cable_Curl",
+      "weightUnit": "lb"
     },
     "hammer": {
       "name": "Alternating dumbbell hammer curl",
@@ -69,7 +74,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Alternate_Hammer_Curl-0.jpg",
         "assets/exercises/Alternate_Hammer_Curl-1.jpg"
       ],
-      "source": "Alternate_Hammer_Curl"
+      "source": "Alternate_Hammer_Curl",
+      "weightUnit": "lb / hand"
     },
     "overhead": {
       "name": "Barbell overhead press",
@@ -79,7 +85,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Standing_Military_Press-0.jpg",
         "assets/exercises/Standing_Military_Press-1.jpg"
       ],
-      "source": "Standing_Military_Press"
+      "source": "Standing_Military_Press",
+      "weightUnit": "lb"
     },
     "inclinepress": {
       "name": "Barbell incline bench press",
@@ -89,7 +96,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Barbell_Incline_Bench_Press_-_Medium_Grip-0.jpg",
         "assets/exercises/Barbell_Incline_Bench_Press_-_Medium_Grip-1.jpg"
       ],
-      "source": "Barbell_Incline_Bench_Press_-_Medium_Grip"
+      "source": "Barbell_Incline_Bench_Press_-_Medium_Grip",
+      "weightUnit": "lb"
     },
     "closebench": {
       "name": "Barbell close-grip bench press",
@@ -99,7 +107,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Close-Grip_Barbell_Bench_Press-0.jpg",
         "assets/exercises/Close-Grip_Barbell_Bench_Press-1.jpg"
       ],
-      "source": "Close-Grip_Barbell_Bench_Press"
+      "source": "Close-Grip_Barbell_Bench_Press",
+      "weightUnit": "lb"
     },
     "inclinefly": {
       "name": "Incline dumbbell chest fly",
@@ -109,7 +118,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Incline_Dumbbell_Flyes-0.jpg",
         "assets/exercises/Incline_Dumbbell_Flyes-1.jpg"
       ],
-      "source": "Incline_Dumbbell_Flyes"
+      "source": "Incline_Dumbbell_Flyes",
+      "weightUnit": "lb / hand"
     },
     "backfly": {
       "name": "Incline dumbbell back fly",
@@ -119,7 +129,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Reverse_Flyes-0.jpg",
         "assets/exercises/Reverse_Flyes-1.jpg"
       ],
-      "source": "Reverse_Flyes"
+      "source": "Reverse_Flyes",
+      "weightUnit": "lb / hand"
     },
     "overheadtriceps": {
       "name": "Seated overhead dumbbell triceps extension",
@@ -129,7 +140,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Seated_Triceps_Press-0.jpg",
         "assets/exercises/Seated_Triceps_Press-1.jpg"
       ],
-      "source": "Seated_Triceps_Press"
+      "source": "Seated_Triceps_Press",
+      "weightUnit": "lb"
     },
     "pullover": {
       "name": "Dumbbell pullover",
@@ -139,7 +151,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Bent-Arm_Dumbbell_Pullover-0.jpg",
         "assets/exercises/Bent-Arm_Dumbbell_Pullover-1.jpg"
       ],
-      "source": "Bent-Arm_Dumbbell_Pullover"
+      "source": "Bent-Arm_Dumbbell_Pullover",
+      "weightUnit": "lb"
     },
     "flatfly": {
       "name": "Flat-bench dumbbell chest fly",
@@ -149,7 +162,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Dumbbell_Flyes-0.jpg",
         "assets/exercises/Dumbbell_Flyes-1.jpg"
       ],
-      "source": "Dumbbell_Flyes"
+      "source": "Dumbbell_Flyes",
+      "weightUnit": "lb / hand"
     },
     "lyingtriceps": {
       "name": "Lying dumbbell triceps extension",
@@ -159,7 +173,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Lying_Dumbbell_Tricep_Extension-0.jpg",
         "assets/exercises/Lying_Dumbbell_Tricep_Extension-1.jpg"
       ],
-      "source": "Lying_Dumbbell_Tricep_Extension"
+      "source": "Lying_Dumbbell_Tricep_Extension",
+      "weightUnit": "lb / hand"
     },
     "hacksquat": {
       "name": "Hack squat",
@@ -169,7 +184,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Hack_Squat-0.jpg",
         "assets/exercises/Hack_Squat-1.jpg"
       ],
-      "source": "Hack_Squat"
+      "source": "Hack_Squat",
+      "weightUnit": "lb"
     },
     "legpress": {
       "name": "Angled machine leg press",
@@ -179,7 +195,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Leg_Press-0.jpg",
         "assets/exercises/Leg_Press-1.jpg"
       ],
-      "source": "Leg_Press"
+      "source": "Leg_Press",
+      "weightUnit": "lb"
     },
     "legextension": {
       "name": "Machine seated leg extension",
@@ -189,13 +206,15 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Leg_Extensions-0.jpg",
         "assets/exercises/Leg_Extensions-1.jpg"
       ],
-      "source": "Leg_Extensions"
+      "source": "Leg_Extensions",
+      "weightUnit": "lb"
     },
     "stepup": {
       "name": "Alternating dumbbell step-up",
       "weighted": true,
       "guide": "Use a sturdy box, not a bench. Plant the entire foot on the box, step up without pushing off excessively, and lower with control. Alternate lead legs.",
-      "cell": 0
+      "cell": 0,
+      "weightUnit": "lb / hand"
     },
     "lunge": {
       "name": "Dumbbell walking lunge",
@@ -205,7 +224,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Dumbbell_Lunges-0.jpg",
         "assets/exercises/Dumbbell_Lunges-1.jpg"
       ],
-      "source": "Dumbbell_Lunges"
+      "source": "Dumbbell_Lunges",
+      "weightUnit": "lb / hand"
     },
     "oblique": {
       "name": "Oblique crunch",
@@ -235,7 +255,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Dumbbell_Side_Bend-0.jpg",
         "assets/exercises/Dumbbell_Side_Bend-1.jpg"
       ],
-      "source": "Dumbbell_Side_Bend"
+      "source": "Dumbbell_Side_Bend",
+      "weightUnit": "lb"
     },
     "inclinepush": {
       "name": "Incline push-up",
@@ -255,7 +276,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Side_Laterals_to_Front_Raise-0.jpg",
         "assets/exercises/Side_Laterals_to_Front_Raise-1.jpg"
       ],
-      "source": "Side_Laterals_to_Front_Raise"
+      "source": "Side_Laterals_to_Front_Raise",
+      "weightUnit": "lb / hand"
     },
     "spiderplank": {
       "name": "Spiderman plank",
@@ -281,13 +303,15 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Triceps_Pushdown-0.jpg",
         "assets/exercises/Triceps_Pushdown-1.jpg"
       ],
-      "source": "Triceps_Pushdown"
+      "source": "Triceps_Pushdown",
+      "weightUnit": "lb"
     },
     "slam": {
       "name": "Kneeling medicine-ball oblique slams",
       "weighted": true,
       "guide": "Kneel on both knees. Lift a slam-rated medicine ball and slam beside one hip with a controlled trunk rotation. Alternate sides; count each slam once.",
-      "cell": 2
+      "cell": 2,
+      "weightUnit": "lb"
     },
     "burpee": {
       "name": "Push-up burpee jumps",
@@ -303,7 +327,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/One-Arm_Kettlebell_Swings-0.jpg",
         "assets/exercises/One-Arm_Kettlebell_Swings-1.jpg"
       ],
-      "source": "One-Arm_Kettlebell_Swings"
+      "source": "One-Arm_Kettlebell_Swings",
+      "weightUnit": "lb"
     },
     "strictpull": {
       "name": "Close-grip strict lat pulldown",
@@ -313,7 +338,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/V-Bar_Pulldown-0.jpg",
         "assets/exercises/V-Bar_Pulldown-1.jpg"
       ],
-      "source": "V-Bar_Pulldown"
+      "source": "V-Bar_Pulldown",
+      "weightUnit": "lb"
     },
     "lyingcurl": {
       "name": "Lying hamstring curl",
@@ -323,7 +349,8 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Lying_Leg_Curls-0.jpg",
         "assets/exercises/Lying_Leg_Curls-1.jpg"
       ],
-      "source": "Lying_Leg_Curls"
+      "source": "Lying_Leg_Curls",
+      "weightUnit": "lb"
     },
     "widecurl": {
       "name": "Wide-grip barbell biceps curl",
@@ -333,13 +360,15 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Wide-Grip_Standing_Barbell_Curl-0.jpg",
         "assets/exercises/Wide-Grip_Standing_Barbell_Curl-1.jpg"
       ],
-      "source": "Wide-Grip_Standing_Barbell_Curl"
+      "source": "Wide-Grip_Standing_Barbell_Curl",
+      "weightUnit": "lb"
     },
     "widerow": {
       "name": "Cable seated wide row",
       "weighted": true,
       "guide": "Sit at a low cable station with feet braced. Use a wide grip on a long straight bar and row toward the upper abdomen, elbows out; return slowly.",
-      "cell": 4
+      "cell": 4,
+      "weightUnit": "lb"
     },
     "concentration": {
       "name": "Dumbbell concentration curl",
@@ -349,13 +378,15 @@ window.STRENGTH_PROGRAM = {
         "assets/exercises/Concentration_Curls-0.jpg",
         "assets/exercises/Concentration_Curls-1.jpg"
       ],
-      "source": "Concentration_Curls"
+      "source": "Concentration_Curls",
+      "weightUnit": "lb"
     },
     "reversecurl": {
       "name": "Alternating reverse lunge with biceps curl",
       "weighted": true,
       "guide": "Hold a dumbbell in each hand. Step back into a controlled lunge while curling the weights toward your shoulders. Stand and alternate legs; count each lunge once.",
-      "cell": 3
+      "cell": 3,
+      "weightUnit": "lb / hand"
     }
   },
   "workouts": [

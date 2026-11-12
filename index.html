@@ -7,9 +7,9 @@
   <title>Strength &amp; Conditioning</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles.css?v=20261112">
-  <link rel="stylesheet" href="strength.css?v=20261112">
-  <script src="strength-data.js?v=20261112" defer></script>
-  <script src="strength-app.js?v=20261112" defer></script>
+  <link rel="stylesheet" href="strength.css?v=20261112-2">
+  <script src="strength-data.js?v=20261112-2" defer></script>
+  <script src="strength-app.js?v=20261112-2" defer></script>
 </head>
 <body>
   <header class="program-switcher">
@@ -27,21 +27,21 @@
           <label class="micro" for="workoutChoice">Choose any workout</label>
           <select id="workoutChoice"></select>
           <div id="workoutSummary" class="muted"></div>
-          <div id="sessionStatus" role="status"></div>
+          <div id="sessionStatus" role="status"></div><button class="secondary full" data-action="finishWorkout">Finish / save workout</button>
         </div>
         <details class="card manual-rest"><summary>Manual rest timer</summary><p class="muted">Automatic rest follows each exercise or round. Start a different rest here.</p><div class="row" id="manualRestChoices"></div></details>
         <div id="todayPlan"></div>
         <div class="card"><h2>Session notes</h2><label class="sr-only" for="notes">Session notes</label><textarea id="notes" placeholder="How did it feel?"></textarea><button id="saveWorkout" class="full">Finish / save workout</button></div>
       </section>
       <section id="program" aria-labelledby="programTitle"><h1 id="programTitle">Your program</h1><p class="muted">Five workouts. Choose the session that fits your day. Targets stay fixed; log the reps and weights you actually use.</p><div id="programList"></div></section>
-      <section id="library" aria-labelledby="libraryTitle"><h1 id="libraryTitle">Exercises</h1><p class="muted">Movement guides shared across your five workouts. Sets and targets belong to each workout.</p><div id="libraryList"></div><p class="micro">Reference photos: <a href="assets/exercises/SOURCES.md">sources and credits</a>.</p></section>
-      <section id="progress" aria-labelledby="progressTitle"><h1 id="progressTitle">Progress</h1><div class="card summary-metrics"><div>Completed sessions <b id="logged" class="big">0</b></div></div><div id="history"></div></section>
+      <section id="library" aria-labelledby="libraryTitle"><h1 id="libraryTitle">Exercises</h1><label for="librarySearch">Search exercises</label><input type="search" id="librarySearch" placeholder="Exercise name"><label for="libraryFilter">Workout</label><select id="libraryFilter"><option value="">All workouts</option></select><p class="muted">Movement guides shared across your five workouts. Sets and targets belong to each workout.</p><div id="libraryList"></div><p class="micro">Reference photos: <a href="assets/exercises/SOURCES.md">sources and credits</a>.</p></section>
+      <section id="progress" aria-labelledby="progressTitle"><h1 id="progressTitle">Progress</h1><div class="card summary-metrics"><div>Completed sessions <b id="logged" class="big">0</b></div></div><div id="history"></div><div class="card"><h2>Backup your data</h2><p class="muted">Download both programs’ data. Restore a backup in an empty browser.</p><button id="exportData" class="secondary">Download backup</button> <label class="backup-import">Restore backup <input id="importData" type="file" accept="application/json,.json"></label><p id="backupStatus" role="status" class="muted"></p></div></section>
     </div>
     <nav class="tabs" aria-label="Main navigation">
       <button data-tab="today" class="active" aria-current="page">Today</button><button data-tab="program">Program</button><button data-tab="library">Exercises</button><button data-tab="progress">Progress</button>
     </nav>
-    <aside id="restTimer" class="floating-timer" role="status" hidden><div><b id="restLabel">Rest</b><span id="restCount">01:00</span></div><button id="skipRest" class="secondary">Skip</button></aside>
-    <aside id="exerciseTimer" class="floating-timer exercise-clock" role="status" hidden><div><b id="exerciseLabel">Exercise</b><span id="exerciseCount">00:20</span></div><button id="cancelExercise" class="secondary">Cancel</button></aside>
+    <aside id="restTimer" class="floating-timer" role="status" hidden><div><b id="restLabel">Rest</b><span id="restCount" aria-live="off">01:00</span></div><div class="rest-actions"><button class="secondary" data-adjust-rest="15">+15s</button><button class="secondary" data-adjust-rest="30">+30s</button><button id="skipRest" class="secondary">Skip</button></div></aside>
+    <aside id="exerciseTimer" class="floating-timer exercise-clock" role="status" hidden><div><b id="exerciseLabel">Exercise</b><span id="exerciseCount" aria-live="off">00:20</span></div><button id="cancelExercise" class="secondary">Cancel</button></aside>
   </main>
   <div id="legacyMount" hidden></div>
 </body>

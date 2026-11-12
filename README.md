@@ -9,10 +9,10 @@ Choose any of five workouts manually: Power Pull, Power Push, Power Legs, Push/o
 - Screenshot-based exercise order, targets, supersets, circuits, and rest periods.
 - Editable actual reps and weights in pounds; failure sets start with blank reps.
 - Weights recalled from the same workout's last completed session.
-- Round-based tracking, including left/right entries and a timed Spiderman plank.
+- Round-based tracking, including left/right entries and a timed Spiderman plank. Supersets show the current round by default; expand all rounds when needed.
 - Automatic rest after a completed set or complete round, plus manual 30/45/60/90-second rests and skip controls. A completed round triggers its rest once per session.
 - Drafts saved before switching workouts or programs; notes, session timing, and completed history.
-- Locally bundled reference photos and expandable photo/text movement guides. Six supplementary reference poses are generated illustrations; see [image sources](assets/exercises/SOURCES.md).
+- Locally bundled reference photos and expandable photo/text movement guides with clearly labeled YouTube search links. Individual video matches are not yet verified. Six supplementary reference poses are generated illustrations; see [image sources](assets/exercises/SOURCES.md).
 
 The source screenshots repeat some sets wording; these are normalized to one set count. Explicit exercise rest instructions override generic rest rows. The five-movement group remains intact. Step-ups use a box.
 
@@ -36,7 +36,7 @@ Data stays in this browser and does not sync across devices. Keep the same site 
 
 Switching workouts or programs pauses the session timer and cancels active rest/exercise timers. Returning to the same session restores its entries. Within one program, changing tabs keeps timers running. Reloading the current session reconciles active timers against their deadlines. Finishing a workout allows partial logs after confirmation; use **Start another session** for a fresh workout, even on the same day.
 
-If browser storage is unavailable, changes remain in memory and the app shows a warning. Unreadable existing strength data is left intact. External media is not required for the new program. Bangtao's original YouTube tutorials still require Internet access.
+If browser storage is unavailable, changes remain in memory and the app shows a warning. When the same draft changes in another tab, saving is stopped to protect both copies; download a backup before leaving the page. The Progress tab offers session corrections and a backup of both programs. Restore currently requires a browser without existing workout data. Unreadable existing strength data is left intact. External media is not required for the new program. Bangtao's original YouTube tutorials still require Internet access.
 
 ## Validation
 
@@ -51,6 +51,8 @@ Browser regression checks require Python's `playwright` package and Chromium (a 
 ```sh
 python3 tests/smoke.py
 python3 tests/edge_cases.py
+python3 tests/review_regressions.py
+python3 tests/review_followup.py
 ```
 
 To use another port or test deployment, set `BANGTAO_TEST_URL` to the app's full base URL, including its trailing slash. The tests use disposable browser contexts and synthetic logs. The smoke checks write screenshots under `/tmp`, outside the checkout.

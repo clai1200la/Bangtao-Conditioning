@@ -419,3 +419,23 @@ body.legacy-active {
   height:calc(100vh - 66px);
   height:calc(100dvh - 66px);
 }
+.guide-images img { height: auto; }
+.ytlink { padding: 10px 0; }
+#librarySearch { width: 100%; min-height: 44px; margin: 8px 0; padding: 8px; border: 1px solid var(--border); border-radius: 8px; font: inherit; }
+.round-toggle { margin-top: 8px; font-size: 12px; }
+.backup-import { display:inline-block; cursor:pointer; padding:12px; border-radius:9px; background:#eee; font-weight:700; }
+.backup-import input { display:block; max-width:220px; margin-top:6px; font-size:12px; }
+.history-edit-row { display:flex; flex-wrap:wrap; align-items:end; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); }
+.history-edit-row b { flex-basis:100%; font-size:13px; }
+.history-edit-row label { font-size:12px; }
+.history-edit-row input[type=number] { display:block; width:90px; }
+.floating-timer .rest-actions { flex-direction:row; flex-wrap:wrap; justify-content:flex-end; }
+.floating-timer .rest-actions button { padding:7px; min-height:42px; }
+html { scroll-padding-top: 80px; scroll-padding-bottom: 170px; }
+.log-row label { font-size:12px; }
+.log-row .check-label { min-width:44px; min-height:44px; justify-content:center; }
+.micro { font-size:12px; }
+#program details { margin-top:12px; }
+#libraryFilter { display:block; width:100%; min-height:44px; margin:8px 0; }
+.guide > .ytlink { display:inline-block; margin:0 14px 0 0; padding:8px 0; }
+.guide > details { display:inline; }
