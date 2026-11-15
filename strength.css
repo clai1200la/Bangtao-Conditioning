@@ -439,3 +439,16 @@ html { scroll-padding-top: 80px; scroll-padding-bottom: 170px; }
 #libraryFilter { display:block; width:100%; min-height:44px; margin:8px 0; }
 .guide > .ytlink { display:inline-block; margin:0 14px 0 0; padding:8px 0; }
 .guide > details { display:inline; }
+/* A quiet rail and text keep grouped movements recognizable in compact view. */
+.grouped-round {
+  border-left: 3px solid #a7c2b5;
+  margin-left: 12px;
+  padding-left: 12px;
+}
+.group-indicator, .group-overview {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+}
+.group-indicator { margin: 0 0 10px; }
+.group-overview { margin: 8px 0; }

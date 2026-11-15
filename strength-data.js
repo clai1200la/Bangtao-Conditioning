@@ -738,9 +738,9 @@ window.STRENGTH_PROGRAM = {
           "transitionRest": 30
         },
         {
-          "kind": "superset",
+          "kind": "single",
           "rounds": 4,
-          "rest": 30,
+          "rest": 60,
           "entries": [
             {
               "exercise": "inclinepress",
@@ -748,7 +748,16 @@ window.STRENGTH_PROGRAM = {
               "eachSide": false,
               "note": "Start light and increase each set by 5 lb.",
               "timed": false
-            },
+            }
+          ],
+          "id": "1",
+          "transitionRest": 60
+        },
+        {
+          "kind": "superset",
+          "rounds": 4,
+          "rest": 30,
+          "entries": [
             {
               "exercise": "spiderpush",
               "target": 20,
@@ -764,7 +773,7 @@ window.STRENGTH_PROGRAM = {
               "timed": false
             }
           ],
-          "id": "1",
+          "id": "1a",
           "transitionRest": 30
         },
         {
@@ -997,5 +1006,172 @@ window.STRENGTH_PROGRAM = {
         }
       ]
     }
-  ]
+  ],
+  "legacyWorkouts": {
+    "pushCore": {
+      "id": "pushCore",
+      "name": "Push, obliques, cardio",
+      "minutes": 57,
+      "blocks": [
+        {
+          "kind": "superset",
+          "rounds": 4,
+          "rest": 30,
+          "entries": [
+            {
+              "exercise": "overhead",
+              "target": 15,
+              "eachSide": false,
+              "note": "Start light and increase each set by 5 lb.",
+              "timed": false
+            },
+            {
+              "exercise": "oblique",
+              "target": 25,
+              "eachSide": true,
+              "note": "25 reps each side.",
+              "timed": false
+            }
+          ],
+          "id": "0",
+          "transitionRest": 30
+        },
+        {
+          "kind": "superset",
+          "rounds": 4,
+          "rest": 30,
+          "entries": [
+            {
+              "exercise": "inclinepress",
+              "target": 15,
+              "eachSide": false,
+              "note": "Start light and increase each set by 5 lb.",
+              "timed": false
+            },
+            {
+              "exercise": "spiderpush",
+              "target": 20,
+              "eachSide": false,
+              "note": "20 reps total.",
+              "timed": false
+            },
+            {
+              "exercise": "sidebend",
+              "target": 12,
+              "eachSide": true,
+              "note": "Use a 40–60 lb dumbbell.",
+              "timed": false
+            }
+          ],
+          "id": "1",
+          "transitionRest": 30
+        },
+        {
+          "kind": "group",
+          "rounds": 3,
+          "rest": 60,
+          "entries": [
+            {
+              "exercise": "inclinefly",
+              "target": 15,
+              "eachSide": false,
+              "note": "Moderate weight.",
+              "timed": false
+            },
+            {
+              "exercise": "backfly",
+              "target": 15,
+              "eachSide": false,
+              "note": "Moderate weight.",
+              "timed": false
+            },
+            {
+              "exercise": "inclinepush",
+              "target": 15,
+              "eachSide": false,
+              "note": "",
+              "timed": false
+            },
+            {
+              "exercise": "raisefront",
+              "target": 10,
+              "eachSide": false,
+              "note": "",
+              "timed": false
+            },
+            {
+              "exercise": "spiderplank",
+              "target": 20,
+              "eachSide": false,
+              "note": "",
+              "timed": true
+            }
+          ],
+          "id": "2",
+          "transitionRest": 30
+        },
+        {
+          "kind": "single",
+          "rounds": 3,
+          "rest": 30,
+          "entries": [
+            {
+              "exercise": "dip",
+              "target": 15,
+              "eachSide": false,
+              "note": "",
+              "timed": false
+            }
+          ],
+          "id": "3",
+          "transitionRest": 30
+        },
+        {
+          "kind": "single",
+          "rounds": 3,
+          "rest": 30,
+          "entries": [
+            {
+              "exercise": "pushdown",
+              "target": 15,
+              "eachSide": false,
+              "note": "",
+              "timed": false
+            }
+          ],
+          "id": "4",
+          "transitionRest": 30
+        },
+        {
+          "kind": "circuit",
+          "rounds": 2,
+          "rest": 0,
+          "entries": [
+            {
+              "exercise": "slam",
+              "target": 20,
+              "eachSide": false,
+              "note": "20 reps total.",
+              "timed": false
+            },
+            {
+              "exercise": "burpee",
+              "target": 10,
+              "eachSide": false,
+              "note": "",
+              "timed": false
+            },
+            {
+              "exercise": "swing",
+              "target": 10,
+              "eachSide": true,
+              "note": "Use a 35 lb kettlebell.",
+              "timed": false
+            }
+          ],
+          "id": "5"
+        }
+      ]
+    }
+  }
 };

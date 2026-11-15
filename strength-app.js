@@ -1,7 +1,7 @@
 /* The legacy app runs in its own document: no shared globals, event listeners or storage. */
 (() => {
   'use strict';
-  const { movements, workouts } = window.STRENGTH_PROGRAM;
+  const { movements, workouts, legacyWorkouts = {} } = window.STRENGTH_PROGRAM;
   const KEY = 'strength_conditioning_v1';
   const PROGRAM_KEY = 'conditioning_active_program';
   const $ = id => document.getElementById(id);
@@ -41,7 +41,10 @@
   let mediaBroken = false;
   const expandedBlocks = new Set();
   let knownDrafts = Object.fromEntries(Object.entries(state.drafts).map(([key, value]) => [key, JSON.stringify(value)]));
-  const workout = () => workouts.find(w => w.id === state.selectedWorkout);
+  const plannedWorkout = () => workouts.find(w => w.id === state.selectedWorkout);
+  // Sessions created before prescriptions were saved use their original program.
+  const sessionWorkout = session => session.prescription || legacyWorkouts[session.workout] || workouts.find(w => w.id === session.workout);
+  const workout = () => current && current.workout === state.selectedWorkout ? sessionWorkout(current) : plannedWorkout();
   function persist() {
     if (!storageReadable) return false;
     try {
@@ -75,15 +78,18 @@
     } catch { notice('Browser storage is full or unavailable. Keep this tab open: recent changes are held in memory but could not be saved.'); return false; }
   }
   function fieldKey(block, round, exercise, side) { return `${block}:${round}:${exercise}:${side}`; }
-  function makeSession() {
-    const w = workout();
+  function makeSession(w = plannedWorkout()) {
     const previous = state.sessions.filter(item => item.workout === w.id && item.complete).sort((a,b) => (b.finishedAt || '').localeCompare(a.finishedAt || ''));
     const session = { prescription: JSON.parse(JSON.stringify(w)), id: uid(), workout: w.id, workoutName: w.name, date: day(), fields: {}, notes: '', elapsed: 0, runningSince: null, complete: false, rested: [], rest: null, exerciseTimer: null };
     w.blocks.forEach(b => {
       for (let round = 0; round < b.rounds; round++) b.entries.forEach(e => {
         (e.eachSide ? ['left','right'] : ['both']).forEach(side => {
           const key = fieldKey(b.id, round, e.exercise, side);
-          session.fields[key] = { reps: e.target === 'failure' ? '' : String(e.target), weight: previous.find(item => item.fields?.[key])?.fields[key]?.weight ?? '', done: false };
+          // The paired exercises used block 1 before the gym-friendly split.
+          const oldKey = w.id === 'pushCore' && b.id === '1a' ? fieldKey('1', round, e.exercise, side) : key;
+          const last = previous.find(item => item.fields?.[key] || item.fields?.[oldKey]);
+          const previousWeight = (last?.fields?.[key] || last?.fields?.[oldKey])?.weight ?? '';
+          session.fields[key] = { reps: e.target === 'failure' ? '' : String(e.target), weight: previousWeight, done: false };
         });
       });
     });
@@ -94,7 +100,7 @@
     const saved = state.sessions.find(s => s.id === state.lastSaved[state.selectedWorkout] && s.date === day());
     current = draft || saved || makeSession();
     current.rested ||= [];
-    const template = makeSession();
+    const template = makeSession(sessionWorkout(current));
     for (const [key, field] of Object.entries(template.fields)) if (!current.fields[key]) current.fields[key] = field;
   }
   function saveDraft() {
@@ -145,6 +151,7 @@
     $('workoutChoice').innerHTML = workouts.map(x => `<option value="${x.id}" ${x.id === w.id ? 'selected' : ''}>${esc(x.name)}</option>`).join('');
     $('workoutSummary').textContent = `${w.blocks.reduce((n,b) => n+b.entries.length,0)} exercises · est. ${w.minutes} min · choose at your own pace`;
     $('sessionStatus').innerHTML = current.complete ? `<div class="saved-message">✓ Workout saved. <button class="secondary" data-action="newSession">Start another session</button></div>` : (state.drafts[w.id] ? `<p class="micro">Draft from ${esc(current.date)}</p>${current.date !== day() ? '<button class="secondary" data-action="newDraft">Start a new session</button>' : ''}` : '');
+    if (w.id === 'pushCore' && !w.blocks.some(block => block.id === '1a')) $('sessionStatus').insertAdjacentHTML('beforeend', '<p class="micro">This session uses the original grouping. New sessions use the updated grouping.</p>');
     $('notes').value = current.notes;
     $('notes').disabled = current.complete;
     $('saveWorkout').disabled = current.complete;
@@ -161,7 +168,7 @@
         rounds = `<div class="single-intro">${info(entry)}${guide(entry.exercise)}</div>`;
         for (let r = 0; r < b.rounds; r++) rounds += `<div class="round" data-block="${b.id}" data-round="${r}"><p class="round-title">Set ${r+1} / ${b.rounds}</p>${(entry.eachSide ? ['left','right'] : ['both']).map(side => row(b,r,entry,side)).join('')}</div>`;
       } else {
-        for (let r = 0; r < b.rounds; r++) rounds += `<div class="round" data-block="${b.id}" data-round="${r}"><p class="round-title">Round ${r+1} / ${b.rounds}</p>${b.entries.map(e => `<div class="movement-card" data-exercise="${e.exercise}">${info(e)}${(e.eachSide ? ['left','right'] : ['both']).map(side => row(b,r,e,side)).join('')}${guide(e.exercise)}</div>`).join('')}</div>`;
+        for (let r = 0; r < b.rounds; r++) rounds += `<div class="round grouped-round" data-block="${b.id}" data-round="${r}"><p class="round-title">Round ${r+1} / ${b.rounds}</p><p class="group-indicator">${b.kind === 'superset' ? 'Superset' : b.kind === 'circuit' ? 'Circuit' : 'Exercise group'} · ${b.entries.length} exercises together</p>${b.entries.map(e => `<div class="movement-card" data-exercise="${e.exercise}">${info(e)}${(e.eachSide ? ['left','right'] : ['both']).map(side => row(b,r,e,side)).join('')}${guide(e.exercise)}</div>`).join('')}</div>`;
       }
       const transition = b.transitionRest ? `<div class="between-rest"><span>${b.transitionRest}s between blocks</span><button class="secondary" data-action="rest" data-seconds="${b.transitionRest}" ${current.complete ? 'disabled' : ''}>Start rest</button></div>` : '';
       return `<article class="workout-block" data-block-card="${b.id}"><header class="block-header"><h2>${esc(name)}</h2><p class="micro">${b.rounds} ${b.kind === 'single' ? 'sets' : 'rounds'} · ${restDescription}</p>${b.kind !== 'single' ? `<button class="secondary round-toggle" data-action="toggleRounds" data-block="${b.id}">${expandedBlocks.has(b.id) ? 'Show current round' : 'Show all rounds'}</button>` : ''}</header>${rounds}${transition}</article>`;
@@ -176,7 +183,7 @@
     });
   }
   function renderProgram() {
-    $('programList').innerHTML = workouts.map(w => `<article class="card"><h2>${esc(w.name)}</h2><p class="muted">${w.blocks.reduce((n,b) => n+b.entries.length,0)} exercises · est. ${w.minutes} minutes</p>${w.instructions ? `<p class="warning">${esc(w.instructions)}</p>` : ''}<button data-action="choose" data-workout="${w.id}" class="full">Choose workout</button><details><summary>View exercises</summary><ol class="program-outline">${w.blocks.map(b => `<li><b>${b.kind === 'single' ? '' : `${b.kind === 'group' ? 'Group' : b.kind === 'circuit' ? 'Circuit' : 'Superset'} · `}${b.rounds} ${b.kind === 'single' ? 'sets' : 'rounds'}</b><br>${b.entries.map(e => `${esc(movements[e.exercise].name)} — ${targetText(e)}${e.note ? ` (${esc(e.note)})` : ''}`).join('<br>')}<br><span class="micro">${b.rest ? `${b.rest}s rest` : 'No prescribed round rest'}${b.transitionRest ? ` · ${b.transitionRest}s between blocks` : ''}</span></li>`).join('')}</ol></details></article>`).join('');
+    $('programList').innerHTML = workouts.map(w => `<article class="card"><h2>${esc(w.name)}</h2><p class="muted">${w.blocks.reduce((n,b) => n+b.entries.length,0)} exercises · est. ${w.minutes} minutes</p>${w.blocks.some(b => b.kind !== 'single') ? `<p class="group-overview">${[...new Set(w.blocks.filter(b => b.kind !== 'single').map(b => b.kind === 'superset' ? 'Supersets' : b.kind === 'circuit' ? 'Circuit' : 'Exercise group'))].join(' · ')}</p>` : ''}${w.instructions ? `<p class="warning">${esc(w.instructions)}</p>` : ''}<button data-action="choose" data-workout="${w.id}" class="full">Choose workout</button><details><summary>View exercises</summary><ol class="program-outline">${w.blocks.map(b => `<li><b>${b.kind === 'single' ? '' : `${b.kind === 'group' ? 'Group' : b.kind === 'circuit' ? 'Circuit' : 'Superset'} · `}${b.rounds} ${b.kind === 'single' ? 'sets' : 'rounds'}</b><br>${b.entries.map(e => `${esc(movements[e.exercise].name)} — ${targetText(e)}${e.note ? ` (${esc(e.note)})` : ''}`).join('<br>')}<br><span class="micro">${b.rest ? `${b.rest}s rest` : 'No prescribed round rest'}${b.transitionRest ? ` · ${b.transitionRest}s between blocks` : ''}</span></li>`).join('')}</ol></details></article>`).join('');
   }
   function renderLibrary() {
     $('libraryFilter').innerHTML = '<option value="">All workouts</option>' + workouts.map(w => `<option value="${w.id}">${esc(w.name)}</option>`).join('');
@@ -195,7 +202,7 @@
   function review(id) {
     const s = state.sessions.find(x => x.id === id);
     if (!s) return;
-    const w = s.prescription || workouts.find(x => x.id === s.workout);
+    const w = sessionWorkout(s);
     $('history').innerHTML = `<div class="card"><button class="secondary" data-action="historyBack">Back to history</button> <button class="secondary" data-action="editHistory" data-id="${esc(s.id)}">Edit session</button><h2 class="review-title">${esc(s.workoutName)}</h2><p class="muted">${esc(s.date)} · ${fmt(s.elapsed)}</p>${s.notes ? `<p>${esc(s.notes)}</p>` : ''}${w.blocks.map(b => `<div class="review-block"><h3>${b.kind === 'single' ? esc(movements[b.entries[0].exercise].name) : esc(b.kind)}</h3>${Array.from({length:b.rounds},(_,r) => `<p class="micro">${b.kind === 'single' ? 'Set' : 'Round'} ${r+1}</p>${b.entries.map(e => (e.eachSide ? ['left','right'] : ['both']).map(side => {
       const f = s.fields[fieldKey(b.id,r,e.exercise,side)] || {};
       return `<p class="muted">${esc(movements[e.exercise].name)}${side === 'both' ? '' : ` · ${side}`} · ${f.reps === '' ? '—' : esc(f.reps)} ${e.timed ? 'sec' : 'reps'}${movements[e.exercise].weighted ? ` · ${f.weight === '' ? '—' : esc(f.weight)} lb` : ''} · ${f.done ? '✓' : 'Unchecked'}</p>`;
@@ -205,7 +212,7 @@
     const session = state.sessions.find(item => item.id === id);
     if (!session) return;
     historyEditing = { original: JSON.stringify(session), value: JSON.parse(JSON.stringify(session)) };
-    const w = session.prescription || workouts.find(item => item.id === session.workout);
+    const w = sessionWorkout(session);
     $('history').innerHTML = `<div class="card"><h2>Edit ${esc(session.workoutName)}</h2><label>Date <input id="historyDate" type="date" required value="${esc(session.date)}"></label><label>Notes <textarea id="historyNotes">${esc(session.notes)}</textarea></label>${w.blocks.map(b => `<div class="review-block"><h3>${b.kind === 'single' ? esc(movements[b.entries[0].exercise].name) : esc(b.kind)}</h3>${Array.from({length:b.rounds},(_,r) => `<p class="micro">${b.kind === 'single' ? 'Set' : 'Round'} ${r+1}</p>${b.entries.map(e => (e.eachSide ? ['left','right'] : ['both']).map(side => {
       const key = fieldKey(b.id,r,e.exercise,side), f = session.fields[key] || {reps:'',weight:'',done:false};
       const label = `${movements[e.exercise].name}${side === 'both' ? '' : ` · ${side}`}`;
