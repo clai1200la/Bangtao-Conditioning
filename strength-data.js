@@ -176,6 +176,17 @@ window.STRENGTH_PROGRAM = {
       "source": "Lying_Dumbbell_Tricep_Extension",
       "weightUnit": "lb / hand"
     },
+    "backsquat": {
+      "name": "Barbell back squat",
+      "weighted": true,
+      "guide": "Set the rack safety bars for your squat depth. Position the bar across your upper back, brace, and step back. Keep your feet planted and squat to a comfortable depth, then stand with control. Start light and add weight gradually.",
+      "images": [
+        "assets/exercises/Barbell_Squat-0.jpg",
+        "assets/exercises/Barbell_Squat-1.jpg"
+      ],
+      "source": "Barbell_Squat",
+      "weightUnit": "lb"
+    },
     "hacksquat": {
       "name": "Hack squat",
       "weighted": true,
@@ -634,10 +645,10 @@ window.STRENGTH_PROGRAM = {
           "rest": 90,
           "entries": [
             {
-              "exercise": "hacksquat",
+              "exercise": "backsquat",
               "target": 10,
               "eachSide": false,
-              "note": "Medium load.",
+              "note": "Start light; use the rack safety bars.",
               "timed": false
             }
           ],
@@ -1170,6 +1181,93 @@ window.STRENGTH_PROGRAM = {
             }
           ],
           "id": "5"
+        }
+      ]
+    },
+    "powerLegs": {
+      "id": "powerLegs",
+      "name": "Power Legs",
+      "minutes": 44,
+      "instructions": "Use a box for step-ups, not a bench.",
+      "blocks": [
+        {
+          "kind": "single",
+          "rounds": 5,
+          "rest": 90,
+          "entries": [
+            {
+              "exercise": "hacksquat",
+              "target": 10,
+              "eachSide": false,
+              "note": "Medium load.",
+              "timed": false
+            }
+          ],
+          "id": "0",
+          "transitionRest": 90
+        },
+        {
+          "kind": "single",
+          "rounds": 5,
+          "rest": 90,
+          "entries": [
+            {
+              "exercise": "legpress",
+              "target": 15,
+              "eachSide": false,
+              "note": "Medium load.",
+              "timed": false
+            }
+          ],
+          "id": "1",
+          "transitionRest": 90
+        },
+        {
+          "kind": "single",
+          "rounds": 3,
+          "rest": 90,
+          "entries": [
+            {
+              "exercise": "legextension",
+              "target": 15,
+              "eachSide": false,
+              "note": "Medium load.",
+              "timed": false
+            }
+          ],
+          "id": "2",
+          "transitionRest": 90
+        },
+        {
+          "kind": "single",
+          "rounds": 2,
+          "rest": 60,
+          "entries": [
+            {
+              "exercise": "stepup",
+              "target": 20,
+              "eachSide": false,
+              "note": "Medium load. 20 alternating reps total. Use a box, not a bench.",
+              "timed": false
+            }
+          ],
+          "id": "3",
+          "transitionRest": 60
+        },
+        {
+          "kind": "single",
+          "rounds": 2,
+          "rest": 60,
+          "entries": [
+            {
+              "exercise": "lunge",
+              "target": 40,
+              "eachSide": false,
+              "note": "Medium load. 40 alternating reps total.",
+              "timed": false
+            }
+          ],
+          "id": "4"
         }
       ]
     }

@@ -14,7 +14,7 @@ Choose any of five workouts manually: Power Pull, Power Push, Power Legs, Push/o
 - Drafts saved before switching workouts or programs; notes, session timing, and completed history.
 - Locally bundled reference photos and expandable photo/text movement guides with clearly labeled YouTube search links. Individual video matches are not yet verified. Six supplementary reference poses are generated illustrations; see [image sources](assets/exercises/SOURCES.md).
 
-The source screenshots repeat some sets wording; these are normalized to one set count. Explicit exercise rest instructions override generic rest rows. The five-movement group remains intact. The incline bench press is completed separately before the Spiderman push-up and side-bend pairing. Existing sessions retain their original workout structure. Step-ups use a box.
+The source screenshots repeat some sets wording; these are normalized to one set count. Explicit exercise rest instructions override generic rest rows. The five-movement group remains intact. The incline bench press is completed separately before the Spiderman push-up and side-bend pairing. Existing sessions retain their original workout structure. Power Legs uses a barbell back squat in a rack; previous hack squat records remain available. Step-ups use a box.
 
 ## Run locally
 
@@ -54,6 +54,7 @@ python3 tests/edge_cases.py
 python3 tests/review_regressions.py
 python3 tests/review_followup.py
 python3 tests/gym_layout.py
+python3 tests/squat_replacement.py
 ```
 
 To use another port or test deployment, set `BANGTAO_TEST_URL` to the app's full base URL, including its trailing slash. The tests use disposable browser contexts and synthetic logs. The smoke checks write screenshots under `/tmp`, outside the checkout.

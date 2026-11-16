@@ -49,7 +49,7 @@ with sync_playwright() as p:
  a.get_by_role('button',name='Exercises',exact=True).click()
  a.locator('#libraryFilter').select_option('powerLegs')
  assert a.locator('#libraryList article:visible').count()==5
- a.locator('#librarySearch').fill('hack')
+ a.locator('#librarySearch').fill('back squat')
  assert a.locator('#libraryList article:visible').count()==1
  c.close()
  # Old drafts retain their date and can be moved into history as partial.

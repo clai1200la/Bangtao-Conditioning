@@ -100,6 +100,20 @@
     const saved = state.sessions.find(s => s.id === state.lastSaved[state.selectedWorkout] && s.date === day());
     current = draft || saved || makeSession();
     current.rested ||= [];
+    // Update an unfinished Power Legs draft without discarding its original machine entries.
+    if (draft && current.workout === 'powerLegs') {
+      const prior = sessionWorkout(current);
+      const first = prior.blocks.find(block => block.id === '0');
+      if (first?.entries[0]?.exercise === 'hacksquat') {
+        const updated = JSON.parse(JSON.stringify(prior));
+        const replacement = plannedWorkout().blocks.find(block => block.id === '0').entries[0];
+        updated.blocks.find(block => block.id === '0').entries[0] = JSON.parse(JSON.stringify(replacement));
+        current.prescription = updated;
+        current.hackSquatMigrated = true;
+        // Machine sets and barbell sets are distinct, including their rest timers.
+        current.rested = current.rested.filter(token => !token.startsWith('0:'));
+      }
+    }
     const template = makeSession(sessionWorkout(current));
     for (const [key, field] of Object.entries(template.fields)) if (!current.fields[key]) current.fields[key] = field;
   }
@@ -152,6 +166,8 @@
     $('workoutSummary').textContent = `${w.blocks.reduce((n,b) => n+b.entries.length,0)} exercises · est. ${w.minutes} min · choose at your own pace`;
     $('sessionStatus').innerHTML = current.complete ? `<div class="saved-message">✓ Workout saved. <button class="secondary" data-action="newSession">Start another session</button></div>` : (state.drafts[w.id] ? `<p class="micro">Draft from ${esc(current.date)}</p>${current.date !== day() ? '<button class="secondary" data-action="newDraft">Start a new session</button>' : ''}` : '');
     if (w.id === 'pushCore' && !w.blocks.some(block => block.id === '1a')) $('sessionStatus').insertAdjacentHTML('beforeend', '<p class="micro">This session uses the original grouping. New sessions use the updated grouping.</p>');
+    if (current.hackSquatMigrated && !current.complete) $('sessionStatus').insertAdjacentHTML('beforeend', '<p class="micro">This draft now uses barbell back squats. Earlier hack squat entries are retained with the session.</p>');
+    if (current.complete && w.id === 'powerLegs' && w.blocks[0]?.entries[0]?.exercise === 'hacksquat') $('sessionStatus').insertAdjacentHTML('beforeend', '<p class="micro">This saved session includes hack squats. New sessions use barbell back squats.</p>');
     $('notes').value = current.notes;
     $('notes').disabled = current.complete;
     $('saveWorkout').disabled = current.complete;
@@ -187,7 +203,7 @@
   }
   function renderLibrary() {
     $('libraryFilter').innerHTML = '<option value="">All workouts</option>' + workouts.map(w => `<option value="${w.id}">${esc(w.name)}</option>`).join('');
-    $('libraryList').innerHTML = Object.entries(movements).map(([id,m]) => `<article class="card" data-library-name="${esc(m.name.toLowerCase())}" data-library-id="${esc(id)}"><div class="exercise-info">${photo(id)}<div class="exercise-heading"><h2>${esc(m.name)}</h2></div></div>${guide(id)}</article>`).join('');
+    $('libraryList').innerHTML = Object.entries(movements).filter(([id]) => id !== 'hacksquat').map(([id,m]) => `<article class="card" data-library-name="${esc(m.name.toLowerCase())}" data-library-id="${esc(id)}"><div class="exercise-info">${photo(id)}<div class="exercise-heading"><h2>${esc(m.name)}</h2></div></div>${guide(id)}</article>`).join('');
   }
   function filterLibrary() {
     const query = $('librarySearch').value.trim().toLowerCase();
@@ -199,6 +215,12 @@
     $('logged').textContent = state.sessions.filter(s => s.complete).length;
     $('history').innerHTML = state.sessions.slice().reverse().map(s => `<button class="history-entry" data-action="review" data-id="${esc(s.id)}"><b>${esc(s.workoutName)}</b><span class="muted">${esc(s.date)} · ${s.complete ? 'Completed' : 'Partial'} · ${fmt(s.elapsed)} · ${Object.values(s.fields).filter(f => f.done).length} entries checked</span>${s.notes ? `<span>${esc(s.notes)}</span>` : ''}</button>`).join('') || '<div class="card muted">No completed workouts yet. Finish and save a session to see it here.</div>';
   }
+  function archivedHackSquat(session, w) {
+    if (w.id !== 'powerLegs' || w.blocks[0]?.entries[0]?.exercise !== 'backsquat') return '';
+    const entries = Array.from({length: 5}, (_, round) => session.fields[fieldKey('0', round, 'hacksquat', 'both')]);
+    if (!entries.some(f => f && (f.done || f.weight || (f.reps !== '' && f.reps !== '10' && f.reps != null)))) return '';
+    return `<div class="review-block"><h3>Earlier hack squat entries</h3><p class="micro">Recorded before this draft was changed to barbell back squats.</p>${entries.map((f, round) => f ? `<p class="muted">Set ${round + 1} · ${esc(f.reps || '—')} reps · ${esc(f.weight || '—')} lb · ${f.done ? '✓' : 'Unchecked'}</p>` : '').join('')}</div>`;
+  }
   function review(id) {
     const s = state.sessions.find(x => x.id === id);
     if (!s) return;
@@ -206,7 +228,7 @@
     $('history').innerHTML = `<div class="card"><button class="secondary" data-action="historyBack">Back to history</button> <button class="secondary" data-action="editHistory" data-id="${esc(s.id)}">Edit session</button><h2 class="review-title">${esc(s.workoutName)}</h2><p class="muted">${esc(s.date)} · ${fmt(s.elapsed)}</p>${s.notes ? `<p>${esc(s.notes)}</p>` : ''}${w.blocks.map(b => `<div class="review-block"><h3>${b.kind === 'single' ? esc(movements[b.entries[0].exercise].name) : esc(b.kind)}</h3>${Array.from({length:b.rounds},(_,r) => `<p class="micro">${b.kind === 'single' ? 'Set' : 'Round'} ${r+1}</p>${b.entries.map(e => (e.eachSide ? ['left','right'] : ['both']).map(side => {
       const f = s.fields[fieldKey(b.id,r,e.exercise,side)] || {};
       return `<p class="muted">${esc(movements[e.exercise].name)}${side === 'both' ? '' : ` · ${side}`} · ${f.reps === '' ? '—' : esc(f.reps)} ${e.timed ? 'sec' : 'reps'}${movements[e.exercise].weighted ? ` · ${f.weight === '' ? '—' : esc(f.weight)} lb` : ''} · ${f.done ? '✓' : 'Unchecked'}</p>`;
-    }).join('')).join('')}`).join('')}</div>`).join('')}</div>`;
+    }).join('')).join('')}`).join('')}</div>`).join('')}${archivedHackSquat(s,w)}</div>`;
   }
   function editHistory(id) {
     const session = state.sessions.find(item => item.id === id);
@@ -330,7 +352,9 @@
     if (current.complete) return;
     const invalid = document.querySelector('#today input:invalid');
     if (invalid) { invalid.reportValidity(); return; }
-    const missing = Object.values(current.fields).some(f => !f.done);
+    const missing = workout().blocks.some(block => Array.from({length: block.rounds}, (_, round) =>
+      block.entries.some(entry => (entry.eachSide ? ['left', 'right'] : ['both']).some(side =>
+        !current.fields[fieldKey(block.id, round, entry.exercise, side)]?.done))).some(Boolean));
     if (missing && !window.confirm('Some sets are unchecked. Save this workout with the entries you have logged?')) return;
     pauseSession(); stopClocks();
     current.complete = true;
