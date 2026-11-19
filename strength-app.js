@@ -87,9 +87,11 @@
           const key = fieldKey(b.id, round, e.exercise, side);
           // The paired exercises used block 1 before the gym-friendly split.
           const oldKey = w.id === 'pushCore' && b.id === '1a' ? fieldKey('1', round, e.exercise, side) : key;
-          const last = previous.find(item => item.fields?.[key] || item.fields?.[oldKey]);
-          const previousWeight = (last?.fields?.[key] || last?.fields?.[oldKey])?.weight ?? '';
-          session.fields[key] = { reps: e.target === 'failure' ? '' : String(e.target), weight: previousWeight, done: false };
+          // Skip empty and unconfirmed suggestions in partial sessions.
+          const candidates = previous.map(item => item.fields?.[key] || item.fields?.[oldKey]);
+          const last = candidates.find(field => field && field.weightSuggested !== true && ((field.weight !== '' && field.weight != null) || field.done));
+          const previousWeight = last?.weight ?? '';
+          session.fields[key] = { reps: e.target === 'failure' ? '' : String(e.target), weight: previousWeight, weightSuggested: previousWeight !== '', done: false };
         });
       });
     });
@@ -155,7 +157,11 @@
     const m = movements[entry.exercise];
     const label = `${m.name}, ${block.kind === 'single' ? 'set' : 'round'} ${round+1}${side === 'both' ? '' : `, ${side}`}`;
     const disabled = current.complete ? 'disabled' : '';
-    const input = (prop, title, value, placeholder = '') => `<label>${title}<input type="number" data-field="${key}" data-prop="${prop}" value="${esc(value)}" min="0" step="${prop === 'weight' ? '0.5' : '1'}" inputmode="decimal" placeholder="${placeholder}" aria-label="${esc(label+' '+title)}" ${disabled}></label>`;
+    const input = (prop, title, value, placeholder = '') => {
+      const suggested = prop === 'weight' && f.weightSuggested === true && value !== '' && value != null;
+      const hint = suggested ? ', previous weight, tick Done to confirm' : '';
+      return `<label>${title}<input type="number" data-field="${key}" data-prop="${prop}" value="${esc(value)}" min="0" step="${prop === 'weight' ? '0.5' : '1'}" inputmode="decimal" placeholder="${placeholder}" aria-label="${esc(label+' '+title+hint)}" ${suggested ? 'class="suggested-weight" title="Previous weight; tick Done to confirm"' : ''} ${disabled}></label>`;
+    };
     const reps = input('reps', entry.timed ? 'SECONDS' : 'ACTUAL REPS', f.reps, entry.target === 'failure' ? 'Actual' : '');
     const weights = m.weighted ? input('weight', (m.weightUnit || 'lb').toUpperCase(), f.weight, '—') : '<span></span>';
     return `<div class="log-row">${side !== 'both' ? `<span class="side-name">${side === 'left' ? 'Left' : 'Right'}</span>` : ''}${reps}${weights}<label class="check-label">DONE<input class="set-complete" type="checkbox" data-field="${key}" data-prop="done" aria-label="${esc(label+' complete')}" ${f.done ? 'checked' : ''} ${disabled}></label></div>${entry.timed ? `<button class="full timed-button secondary" data-action="exerciseTimer" data-key="${key}" ${disabled}>Start ${esc(m.name)} timer</button>` : ''}`;
@@ -164,6 +170,7 @@
     const w = workout();
     $('workoutChoice').innerHTML = workouts.map(x => `<option value="${x.id}" ${x.id === w.id ? 'selected' : ''}>${esc(x.name)}</option>`).join('');
     $('workoutSummary').textContent = `${w.blocks.reduce((n,b) => n+b.entries.length,0)} exercises · est. ${w.minutes} min · choose at your own pace`;
+    $('weightHint').hidden = !Object.values(current.fields).some(field => field.weightSuggested === true && field.weight !== '' && field.weight != null);
     $('sessionStatus').innerHTML = current.complete ? `<div class="saved-message">✓ Workout saved. <button class="secondary" data-action="newSession">Start another session</button></div>` : (state.drafts[w.id] ? `<p class="micro">Draft from ${esc(current.date)}</p>${current.date !== day() ? '<button class="secondary" data-action="newDraft">Start a new session</button>' : ''}` : '');
     if (w.id === 'pushCore' && !w.blocks.some(block => block.id === '1a')) $('sessionStatus').insertAdjacentHTML('beforeend', '<p class="micro">This session uses the original grouping. New sessions use the updated grouping.</p>');
     if (current.hackSquatMigrated && !current.complete) $('sessionStatus').insertAdjacentHTML('beforeend', '<p class="micro">This draft now uses barbell back squats. Earlier hack squat entries are retained with the session.</p>');
@@ -211,7 +218,20 @@
     const included = selected ? new Set(selected.blocks.flatMap(block => block.entries.map(entry => entry.exercise))) : null;
     document.querySelectorAll('[data-library-name]').forEach(card => { card.hidden = !card.dataset.libraryName.includes(query) || !!(included && !included.has(card.dataset.libraryId)); });
   }
+  // Another tab may have saved a session since this document was opened.
+  // Refresh only the history; never replace an in-progress draft here.
+  function refreshHistory() {
+    if (!storageReadable) return;
+    try {
+      const remote = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (!Array.isArray(remote?.sessions)) return;
+      const sessions = new Map(state.sessions.map(session => [session.id, session]));
+      remote.sessions.forEach(session => sessions.set(session.id, session));
+      state.sessions = [...sessions.values()];
+    } catch { notice('Could not refresh workout history from browser storage. Existing data has not been changed.'); }
+  }
   function renderProgress() {
+    refreshHistory();
     $('logged').textContent = state.sessions.filter(s => s.complete).length;
     $('history').innerHTML = state.sessions.slice().reverse().map(s => `<button class="history-entry" data-action="review" data-id="${esc(s.id)}"><b>${esc(s.workoutName)}</b><span class="muted">${esc(s.date)} · ${s.complete ? 'Completed' : 'Partial'} · ${fmt(s.elapsed)} · ${Object.values(s.fields).filter(f => f.done).length} entries checked</span>${s.notes ? `<span>${esc(s.notes)}</span>` : ''}</button>`).join('') || '<div class="card muted">No completed workouts yet. Finish and save a session to see it here.</div>';
   }
@@ -227,7 +247,7 @@
     const w = sessionWorkout(s);
     $('history').innerHTML = `<div class="card"><button class="secondary" data-action="historyBack">Back to history</button> <button class="secondary" data-action="editHistory" data-id="${esc(s.id)}">Edit session</button><h2 class="review-title">${esc(s.workoutName)}</h2><p class="muted">${esc(s.date)} · ${fmt(s.elapsed)}</p>${s.notes ? `<p>${esc(s.notes)}</p>` : ''}${w.blocks.map(b => `<div class="review-block"><h3>${b.kind === 'single' ? esc(movements[b.entries[0].exercise].name) : esc(b.kind)}</h3>${Array.from({length:b.rounds},(_,r) => `<p class="micro">${b.kind === 'single' ? 'Set' : 'Round'} ${r+1}</p>${b.entries.map(e => (e.eachSide ? ['left','right'] : ['both']).map(side => {
       const f = s.fields[fieldKey(b.id,r,e.exercise,side)] || {};
-      return `<p class="muted">${esc(movements[e.exercise].name)}${side === 'both' ? '' : ` · ${side}`} · ${f.reps === '' ? '—' : esc(f.reps)} ${e.timed ? 'sec' : 'reps'}${movements[e.exercise].weighted ? ` · ${f.weight === '' ? '—' : esc(f.weight)} lb` : ''} · ${f.done ? '✓' : 'Unchecked'}</p>`;
+      return `<p class="muted">${esc(movements[e.exercise].name)}${side === 'both' ? '' : ` · ${side}`} · ${f.reps === '' ? '—' : esc(f.reps)} ${e.timed ? 'sec' : 'reps'}${movements[e.exercise].weighted ? ` · ${f.weight === '' ? '—' : esc(f.weight)} lb${f.weightSuggested ? ' (previous; unconfirmed)' : ''}` : ''} · ${f.done ? '✓' : 'Unchecked'}</p>`;
     }).join('')).join('')}`).join('')}</div>`).join('')}${archivedHackSquat(s,w)}</div>`;
   }
   function editHistory(id) {
@@ -251,7 +271,10 @@
     updated.notes = $('historyNotes').value;
     $('history').querySelectorAll('[data-history-key]').forEach(input => {
       updated.fields[input.dataset.historyKey] ||= {reps:'',weight:'',done:false};
-      updated.fields[input.dataset.historyKey][input.dataset.historyProp] = input.type === 'checkbox' ? input.checked : input.value;
+      const field = updated.fields[input.dataset.historyKey];
+      const value = input.type === 'checkbox' ? input.checked : input.value;
+      if ((input.dataset.historyProp === 'weight' && String(field.weight ?? '') !== value) || (input.dataset.historyProp === 'done' && value)) field.weightSuggested = false;
+      field[input.dataset.historyProp] = value;
     });
     try {
       const remote = JSON.parse(localStorage.getItem(KEY) || 'null');
@@ -280,8 +303,8 @@
   }
   function chooseWorkout(id) {
     if (!workouts.some(w => w.id === id)) return;
-    pauseSession(); stopClocks(); saveDraft();
-    if (concurrentConflict) { $('workoutChoice').value = current.workout; return; }
+    pauseSession(); stopClocks();
+    if (!saveDraft()) { $('workoutChoice').value = current.workout; return; }
     state.selectedWorkout = id;
     expandedBlocks.clear(); persist(); loadCurrent(); renderToday(); showTab('today');
   }
@@ -341,6 +364,7 @@
       if (seconds <= 0) {
         current.exerciseTimer = null;
         current.fields[timer.key].done = true;
+        confirmSuggestedWeight(timer.key);
         const checkbox = document.querySelector(`[data-field="${timer.key}"][data-prop="done"]`);
         if (checkbox) checkbox.checked = true;
         completedField(timer.key, timer.end); alarm(); saveDraft(); updateRoundVisibility();
@@ -376,8 +400,8 @@
   function switchProgram(program) {
     if (program === activeProgram) return;
     if (program === 'bangtao') {
-      pauseSession(); stopClocks(); saveDraft();
-      if (concurrentConflict) { $('programChoice').value = 'strength'; return; }
+      pauseSession(); stopClocks();
+      if (!saveDraft()) { $('programChoice').value = 'strength'; return; }
       activeProgram = 'bangtao';
       $('strengthShell').hidden = true;
       $('legacyMount').hidden = false;
@@ -401,6 +425,7 @@
     try { localStorage.setItem(PROGRAM_KEY, program); } catch { /* The selector still works in memory. */ }
   }
   function exportData() {
+    refreshHistory();
     const backup = { format: 'conditioning-backup', version: 1, strength: state, bangtao: null, recovery: null };
     try { if (!storageReadable) backup.unreadableStrength = localStorage.getItem(KEY); backup.bangtao = localStorage.getItem('bangtao12'); backup.recovery = localStorage.getItem('bangtao12_active_session'); }
     catch { $('backupStatus').textContent = 'Could not read Bangtao data for the backup.'; return; }
@@ -430,6 +455,18 @@
     } catch (error) { $('backupStatus').textContent = error.message || 'Could not restore the backup. Your existing data was not changed.'; }
     $('importData').value = '';
   }
+  function confirmSuggestedWeight(key) {
+    const field = current.fields[key];
+    if (!field?.weightSuggested) return;
+    field.weightSuggested = false;
+    const input = document.querySelector(`[data-field="${key}"][data-prop="weight"]`);
+    if (input) {
+      input.classList.remove('suggested-weight');
+      input.removeAttribute('title');
+      input.setAttribute('aria-label', input.getAttribute('aria-label').replace(', previous weight, tick Done to confirm', ''));
+    }
+    $('weightHint').hidden = !Object.values(current.fields).some(f => f.weightSuggested === true && f.weight !== '' && f.weight != null);
+  }
   document.addEventListener('input', event => {
     if (activeProgram !== 'strength') return;
     const el = event.target;
@@ -441,6 +478,7 @@
       if (el.value !== '' && (!Number.isFinite(el.valueAsNumber) || el.valueAsNumber < 0)) { el.setCustomValidity('Enter a number of zero or more.'); return; }
       el.setCustomValidity('');
       current.fields[el.dataset.field][el.dataset.prop] = el.value;
+      if (el.dataset.prop === 'weight') confirmSuggestedWeight(el.dataset.field);
       saveDraft();
     }
   });
@@ -453,6 +491,7 @@
     if (event.target.dataset.prop === 'done' && !current.complete) {
       const key = event.target.dataset.field;
       current.fields[key].done = event.target.checked;
+      if (event.target.checked) confirmSuggestedWeight(key);
       if (event.target.checked) { unlockAudio(); completedField(key); }
       saveDraft(); updateRoundVisibility();
     }

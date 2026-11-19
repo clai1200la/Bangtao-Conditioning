@@ -7,9 +7,9 @@
   <title>Strength &amp; Conditioning</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles.css?v=20261112">
-  <link rel="stylesheet" href="strength.css?v=20261115-2">
+  <link rel="stylesheet" href="strength.css?v=20261117-1">
   <script src="strength-data.js?v=20261116-1" defer></script>
-  <script src="strength-app.js?v=20261116-1" defer></script>
+  <script src="strength-app.js?v=20261117-1" defer></script>
 </head>
 <body>
   <header class="program-switcher">
@@ -26,7 +26,7 @@
           <div class="head"><h2>Your workout</h2><button id="sessionToggle" class="secondary" aria-label="Start session timer">Start · <span id="sessionTime">00:00</span></button></div>
           <label class="micro" for="workoutChoice">Choose any workout</label>
           <select id="workoutChoice"></select>
-          <div id="workoutSummary" class="muted"></div>
+          <div id="workoutSummary" class="muted"></div><p id="weightHint" class="micro" hidden>Grey weights are from a previous workout. Tick Done to confirm or enter a new weight.</p>
           <div id="sessionStatus" role="status"></div><button class="secondary full" data-action="finishWorkout">Finish / save workout</button>
         </div>
         <details class="card manual-rest"><summary>Manual rest timer</summary><p class="muted">Automatic rest follows each exercise or round. Start a different rest here.</p><div class="row" id="manualRestChoices"></div></details>

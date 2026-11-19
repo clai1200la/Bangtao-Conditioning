@@ -8,7 +8,7 @@ Choose any of five workouts manually: Power Pull, Power Push, Power Legs, Push/o
 
 - Screenshot-based exercise order, targets, supersets, circuits, and rest periods.
 - Editable actual reps and weights in pounds; failure sets start with blank reps.
-- Weights recalled from the same workout's last completed session.
+- Previous weights for the same workout and set appear in grey. Editing a weight or marking the set done confirms it in black. Unconfirmed suggestions in partial sessions remain labeled and are not carried forward as completed weights. Drafts created before this feature retain their existing entries without being reclassified.
 - Round-based tracking, including left/right entries and a timed Spiderman plank. Supersets show the current round by default; expand all rounds when needed.
 - Automatic rest after a completed set or complete round, plus manual 30/45/60/90-second rests and skip controls. A completed round triggers its rest once per session.
 - Drafts saved before switching workouts or programs; notes, session timing, and completed history.
@@ -55,6 +55,8 @@ python3 tests/review_regressions.py
 python3 tests/review_followup.py
 python3 tests/gym_layout.py
 python3 tests/squat_replacement.py
+python3 tests/weight_suggestions.py
+python3 tests/history_safety.py
 ```
 
 To use another port or test deployment, set `BANGTAO_TEST_URL` to the app's full base URL, including its trailing slash. The tests use disposable browser contexts and synthetic logs. The smoke checks write screenshots under `/tmp`, outside the checkout.
