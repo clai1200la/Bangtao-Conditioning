@@ -17,7 +17,7 @@ with sync_playwright() as p:
  assert page.goto(URL).status==200
  expect(page).to_have_title('Strength & Conditioning')
  expect(page.locator('#todayTitle')).to_be_visible()
- assert page.locator('#todayPlan input[type=checkbox]').count()==24
+ assert page.locator('#todayPlan input[type=checkbox]').count()==38
  data=page.evaluate('STRENGTH_PROGRAM')
  assert [sum(len(b['entries']) for b in w['blocks']) for w in data['workouts']]==[7,9,5,15,9]
  assert [b['rest'] for b in data['workouts'][2]['blocks']]==[90,90,90,60,60]

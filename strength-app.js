@@ -2,6 +2,22 @@
 (() => {
   'use strict';
   const { movements, workouts, legacyWorkouts = {} } = window.STRENGTH_PROGRAM;
+  const stretchMovements = {
+    stretchA: {name:'A. Hamstring / groin stretch', guide:'Place your hands on the floor. Step one foot forward between your hands and extend the other leg behind you, balancing on the ball of the back foot. Shift forward gently while keeping the back leg as straight as comfortable. Switch legs.'},
+    stretchB: {name:'B. Seated hamstring stretch', guide:'Sit with both legs straight in front, toes up and heels within six inches of each other. Keep your back straight and reach toward your toes only as far as comfortable.'},
+    stretchC: {name:'C. Calf / Achilles tendon stretch', guide:'Lean against a solid support with one foot behind you, both heels flat and toes pointing forward. Move your hips forward gently. For set 1 keep the back knee straight; for set 2 bend both knees. Switch legs.'},
+    stretchD: {name:'D. Standing quad stretch', guide:'Stand near a solid support and hold it for balance. Bend one leg behind you, hold the foot with the opposite hand and gently bring the heel toward your body. Switch legs.'}
+  };
+  Object.assign(movements, stretchMovements);
+  const stretchBlocks = Object.keys(stretchMovements).map((exercise, i) => ({
+    id:`stretch-${i}`, kind:'single', rounds:2, rest:0, isStretch:true,
+    entries:[{exercise, target:45, timed:true, eachSide:i !== 1}]
+  }));
+  function withStretches(w) {
+    const copy = JSON.parse(JSON.stringify(w));
+    for (const block of stretchBlocks) if (!copy.blocks.some(item => item.id === block.id)) copy.blocks.push(JSON.parse(JSON.stringify(block)));
+    return copy;
+  }
   const KEY = 'strength_conditioning_v1';
   const PROGRAM_KEY = 'conditioning_active_program';
   const $ = id => document.getElementById(id);
@@ -79,6 +95,7 @@
   }
   function fieldKey(block, round, exercise, side) { return `${block}:${round}:${exercise}:${side}`; }
   function makeSession(w = plannedWorkout()) {
+    w = withStretches(w);
     const previous = state.sessions.filter(item => item.workout === w.id && item.complete).sort((a,b) => (b.finishedAt || '').localeCompare(a.finishedAt || ''));
     const session = { prescription: JSON.parse(JSON.stringify(w)), id: uid(), workout: w.id, workoutName: w.name, date: day(), fields: {}, notes: '', elapsed: 0, runningSince: null, complete: false, rested: [], rest: null, exerciseTimer: null };
     w.blocks.forEach(b => {
@@ -116,6 +133,8 @@
         current.rested = current.rested.filter(token => !token.startsWith('0:'));
       }
     }
+    // Add cooldowns to unfinished sessions only. Saved session prescriptions stay unchanged.
+    if (draft && !current.complete) current.prescription = withStretches(sessionWorkout(current));
     const template = makeSession(sessionWorkout(current));
     for (const [key, field] of Object.entries(template.fields)) if (!current.fields[key]) current.fields[key] = field;
   }
@@ -135,15 +154,20 @@
     if (entry.target === 'failure') return 'To failure · log actual reps';
     return `${entry.target} ${entry.timed ? 'seconds' : 'reps'}${entry.eachSide ? ' each side' : ''}`;
   }
-  function photo(id, large = false) {
+  function photo(id, large = false, variant = 0) {
     const m = movements[id];
+    if (stretchMovements[id]) {
+      const cell = {stretchA:0, stretchB:1, stretchC:variant ? 3 : 2, stretchD:4}[id];
+      const description = id === 'stretchC' ? (variant ? 'both knees bent, heels flat' : 'back knee straight, heels flat') : 'reference position';
+      return `<span class="exercise-photo stretch-frame${large ? ' guide-sheet' : ''}" role="img" aria-label="${esc(m.name)}: ${description}" style="--pose:${cell}"><img src="assets/exercises/stretch-reference.png" alt="" loading="lazy"></span>`;
+    }
     if (m.cell !== undefined && mediaBroken) return `<span class="exercise-photo photo-fallback" role="img" aria-label="${esc(m.name)} photo unavailable">Photo unavailable</span>`;
     if (m.cell !== undefined) return `<span class="exercise-photo sheet-photo${large ? ' guide-sheet' : ''}" data-cell="${m.cell}" role="img" aria-label="${esc(m.name)} reference pose" title="Illustrative reference photo"></span>`;
     return `<img class="exercise-photo" src="${esc(m.images[1])}" alt="${esc(m.name)} reference position" loading="lazy" width="88" height="88">`;
   }
   function guide(id) {
     const m = movements[id];
-    const imgs = m.images ? `<div class="guide-images">${m.images.map((src,i) => `<img src="${src}" alt="${esc(m.name)} · position ${i+1}" loading="lazy" width="300" height="300">`).join('')}</div>` : `<div class="guide-images">${photo(id, true)}</div><p class="guide-caption">Illustrative reference pose. Follow the steps below for the complete movement.</p>`;
+    const imgs = stretchMovements[id] ? `<div class="guide-images stretch-guides">${photo(id, true)}${id === 'stretchC' ? photo(id, true, 1) : ''}</div><p class="guide-caption">Illustrative reference${id === 'stretchC' ? ': straight knee, then bent knees' : ''}. Follow your podiatrist’s instructions.</p>` : m.images ? `<div class="guide-images">${m.images.map((src,i) => `<img src="${src}" alt="${esc(m.name)} · position ${i+1}" loading="lazy" width="300" height="300">`).join('')}</div>` : `<div class="guide-images">${photo(id, true)}</div><p class="guide-caption">Illustrative reference pose. Follow the steps below for the complete movement.</p>`;
     const search = `https://www.youtube.com/results?search_query=${encodeURIComponent(m.name + ' exercise tutorial')}`;
     return `<div class="guide"><a class="ytlink" href="${search}" target="_blank" rel="noopener noreferrer" aria-label="Search YouTube for ${esc(m.name)} tutorials">Search YouTube</a><details><summary>Show movement guide</summary>${imgs}<p>${esc(m.guide)}</p></details></div>`;
   }
@@ -164,12 +188,12 @@
     };
     const reps = input('reps', entry.timed ? 'SECONDS' : 'ACTUAL REPS', f.reps, entry.target === 'failure' ? 'Actual' : '');
     const weights = m.weighted ? input('weight', (m.weightUnit || 'lb').toUpperCase(), f.weight, '—') : '<span></span>';
-    return `<div class="log-row">${side !== 'both' ? `<span class="side-name">${side === 'left' ? 'Left' : 'Right'}</span>` : ''}${reps}${weights}<label class="check-label">DONE<input class="set-complete" type="checkbox" data-field="${key}" data-prop="done" aria-label="${esc(label+' complete')}" ${f.done ? 'checked' : ''} ${disabled}></label></div>${entry.timed ? `<button class="full timed-button secondary" data-action="exerciseTimer" data-key="${key}" ${disabled}>Start ${esc(m.name)} timer</button>` : ''}`;
+    return `<div class="log-row">${side !== 'both' ? `<span class="side-name">${side === 'left' ? 'Left' : 'Right'}</span>` : ''}${reps}${weights}<label class="check-label">DONE<input class="set-complete" type="checkbox" data-field="${key}" data-prop="done" aria-label="${esc(label+' complete')}" ${f.done ? 'checked' : ''} ${disabled}></label></div>${entry.timed ? `<button class="full timed-button secondary" data-action="exerciseTimer" data-key="${key}" ${disabled}>${block.isStretch ? `Start timer · ${side === 'both' ? 'both legs' : side} · set ${round+1}` : `Start ${esc(m.name)} timer`}</button>` : ''}`;
   }
   function renderToday() {
     const w = workout();
     $('workoutChoice').innerHTML = workouts.map(x => `<option value="${x.id}" ${x.id === w.id ? 'selected' : ''}>${esc(x.name)}</option>`).join('');
-    $('workoutSummary').textContent = `${w.blocks.reduce((n,b) => n+b.entries.length,0)} exercises · est. ${w.minutes} min · choose at your own pace`;
+    $('workoutSummary').textContent = `${w.blocks.filter(b => !b.isStretch).reduce((n,b) => n+b.entries.length,0)} exercises · est. ${w.minutes} min${w.blocks.some(b => b.isStretch) ? ' + 10½ min stretches' : ''} · choose at your own pace`;
     $('weightHint').hidden = !Object.values(current.fields).some(field => field.weightSuggested === true && field.weight !== '' && field.weight != null);
     $('sessionStatus').innerHTML = current.complete ? `<div class="saved-message">✓ Workout saved. <button class="secondary" data-action="newSession">Start another session</button></div>` : (state.drafts[w.id] ? `<p class="micro">Draft from ${esc(current.date)}</p>${current.date !== day() ? '<button class="secondary" data-action="newDraft">Start a new session</button>' : ''}` : '');
     if (w.id === 'pushCore' && !w.blocks.some(block => block.id === '1a')) $('sessionStatus').insertAdjacentHTML('beforeend', '<p class="micro">This session uses the original grouping. New sessions use the updated grouping.</p>');
@@ -189,12 +213,12 @@
       if (b.kind === 'single') {
         const entry = b.entries[0];
         rounds = `<div class="single-intro">${info(entry)}${guide(entry.exercise)}</div>`;
-        for (let r = 0; r < b.rounds; r++) rounds += `<div class="round" data-block="${b.id}" data-round="${r}"><p class="round-title">Set ${r+1} / ${b.rounds}</p>${(entry.eachSide ? ['left','right'] : ['both']).map(side => row(b,r,entry,side)).join('')}</div>`;
+        for (let r = 0; r < b.rounds; r++) rounds += `<div class="round" data-block="${b.id}" data-round="${r}"><p class="round-title">Set ${r+1} / ${b.rounds}${entry.exercise === 'stretchC' ? (r === 0 ? ' · back knee straight' : ' · both knees bent') : ''}</p>${(entry.eachSide ? ['left','right'] : ['both']).map(side => row(b,r,entry,side)).join('')}</div>`;
       } else {
         for (let r = 0; r < b.rounds; r++) rounds += `<div class="round grouped-round" data-block="${b.id}" data-round="${r}"><p class="round-title">Round ${r+1} / ${b.rounds}</p><p class="group-indicator">${b.kind === 'superset' ? 'Superset' : b.kind === 'circuit' ? 'Circuit' : 'Exercise group'} · ${b.entries.length} exercises together</p>${b.entries.map(e => `<div class="movement-card" data-exercise="${e.exercise}">${info(e)}${(e.eachSide ? ['left','right'] : ['both']).map(side => row(b,r,e,side)).join('')}${guide(e.exercise)}</div>`).join('')}</div>`;
       }
       const transition = b.transitionRest ? `<div class="between-rest"><span>${b.transitionRest}s between blocks</span><button class="secondary" data-action="rest" data-seconds="${b.transitionRest}" ${current.complete ? 'disabled' : ''}>Start rest</button></div>` : '';
-      return `<article class="workout-block" data-block-card="${b.id}"><header class="block-header"><h2>${esc(name)}</h2><p class="micro">${b.rounds} ${b.kind === 'single' ? 'sets' : 'rounds'} · ${restDescription}</p>${b.kind !== 'single' ? `<button class="secondary round-toggle" data-action="toggleRounds" data-block="${b.id}">${expandedBlocks.has(b.id) ? 'Show current round' : 'Show all rounds'}</button>` : ''}</header>${rounds}${transition}</article>`;
+      return `${b.id === 'stretch-0' ? '<div class="stretch-intro"><h2>Stretches</h2><p class="muted">2 sets · 45 seconds per hold. Move gently within a comfortable range.</p></div>' : ''}<article class="workout-block" data-block-card="${b.id}"><header class="block-header"><h2>${esc(name)}</h2><p class="micro">${b.rounds} ${b.kind === 'single' ? 'sets' : 'rounds'} · ${b.isStretch ? '45-second holds' : restDescription}</p>${b.kind !== 'single' ? `<button class="secondary round-toggle" data-action="toggleRounds" data-block="${b.id}">${expandedBlocks.has(b.id) ? 'Show current round' : 'Show all rounds'}</button>` : ''}</header>${rounds}${transition}</article>`;
     }).join('');
     updateRoundVisibility(); refreshClocks();
   }
@@ -210,7 +234,7 @@
   }
   function renderLibrary() {
     $('libraryFilter').innerHTML = '<option value="">All workouts</option>' + workouts.map(w => `<option value="${w.id}">${esc(w.name)}</option>`).join('');
-    $('libraryList').innerHTML = Object.entries(movements).filter(([id]) => id !== 'hacksquat').map(([id,m]) => `<article class="card" data-library-name="${esc(m.name.toLowerCase())}" data-library-id="${esc(id)}"><div class="exercise-info">${photo(id)}<div class="exercise-heading"><h2>${esc(m.name)}</h2></div></div>${guide(id)}</article>`).join('');
+    $('libraryList').innerHTML = Object.entries(movements).filter(([id]) => id !== 'hacksquat' && !stretchMovements[id]).map(([id,m]) => `<article class="card" data-library-name="${esc(m.name.toLowerCase())}" data-library-id="${esc(id)}"><div class="exercise-info">${photo(id)}<div class="exercise-heading"><h2>${esc(m.name)}</h2></div></div>${guide(id)}</article>`).join('');
   }
   function filterLibrary() {
     const query = $('librarySearch').value.trim().toLowerCase();
@@ -359,7 +383,9 @@
     $('exerciseTimer').hidden = !timer;
     if (timer) {
       const seconds = Math.ceil((timer.end-Date.now())/1000);
-      if ($('exerciseLabel').textContent !== movements[timer.exercise].name) $('exerciseLabel').textContent = movements[timer.exercise].name;
+      const side = timer.key.split(':')[3];
+      const timerLabel = movements[timer.exercise].name + (stretchMovements[timer.exercise] ? ` · ${side === 'both' ? 'both legs' : side}` : '');
+      if ($('exerciseLabel').textContent !== timerLabel) $('exerciseLabel').textContent = timerLabel;
       if ($('exerciseCount').textContent !== fmt(seconds)) $('exerciseCount').textContent = fmt(seconds);
       if (seconds <= 0) {
         current.exerciseTimer = null;
