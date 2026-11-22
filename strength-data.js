@@ -1273,3 +1273,28 @@ window.STRENGTH_PROGRAM = {
     }
   }
 };
+
+// A standalone, gentle lower-leg session; existing workout prescriptions are unchanged.
+Object.assign(window.STRENGTH_PROGRAM.movements, {
+  flatCalfRaise: {
+    name:'Standing calf raise', weighted:false, lowerLegPose:0,
+    guide:'On flat ground, lightly hold a wall or sturdy support. Rise onto the balls of both feet, then lower slowly until your heels return to the floor. Keep the movement controlled; do not lower off a step.'
+  },
+  tibialisRaise: {
+    name:'Standing tibialis raise', weighted:false, lowerLegPose:1,
+    guide:'With your back supported by a wall and heels on the floor, lift the fronts of both feet toward your shins. Lower slowly. Move your feet closer to the wall if you need an easier version.'
+  },
+  seatedAnklePump: {
+    name:'Seated ankle pumps', weighted:false,
+    guide:'Sit on a sturdy chair with both feet unsupported and heels free of pressure. Gently lift your toes toward your shins, then relax back to a comfortable position. Move slowly and stop if the movement hurts.',
+    images:['assets/exercises/seated-ankle-pumps.png']
+  }
+});
+window.STRENGTH_PROGRAM.workouts.push({
+  id:'calfMobility', name:'Calf strength & stretches', minutes:5,
+  instructions:'The calf raises and ankle pumps are suggestions in addition to your podiatrist’s stretches. Check that they fit your heel-pain plan; stop if either causes pain.',
+  blocks:[
+    {id:'0', kind:'single', rounds:2, rest:60, entries:[{exercise:'flatCalfRaise', target:10, eachSide:false, note:'Both legs together · body weight · flat ground'}]},
+    {id:'1', kind:'single', rounds:2, rest:60, entries:[{exercise:'seatedAnklePump', target:10, eachSide:false, note:'Both feet unsupported · gentle mobility'}]}
+  ]
+});

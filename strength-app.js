@@ -133,6 +133,17 @@
         current.rested = current.rested.filter(token => !token.startsWith('0:'));
       }
     }
+    // Replace the painful standing raise in unfinished calf sessions, retaining old fields.
+    if (draft && !current.complete && current.workout === 'calfMobility') {
+      const prior = sessionWorkout(current);
+      const oldBlock = prior.blocks.find(block => block.id === '1');
+      if (oldBlock?.entries[0]?.exercise === 'tibialisRaise') {
+        const updated = JSON.parse(JSON.stringify(prior));
+        updated.blocks[updated.blocks.findIndex(block => block.id === '1')] = JSON.parse(JSON.stringify(plannedWorkout().blocks.find(block => block.id === '1')));
+        current.prescription = updated;
+        current.rested = current.rested.filter(token => !token.startsWith('1:'));
+      }
+    }
     // Add cooldowns to unfinished sessions only. Saved session prescriptions stay unchanged.
     if (draft && !current.complete) current.prescription = withStretches(sessionWorkout(current));
     const template = makeSession(sessionWorkout(current));
@@ -161,9 +172,10 @@
       const description = id === 'stretchC' ? (variant ? 'both knees bent, heels flat' : 'back knee straight, heels flat') : 'reference position';
       return `<span class="exercise-photo stretch-frame${large ? ' guide-sheet' : ''}" role="img" aria-label="${esc(m.name)}: ${description}" style="--pose:${cell}"><img src="assets/exercises/stretch-reference.png" alt="" loading="lazy"></span>`;
     }
+    if (m.lowerLegPose !== undefined) return `<span class="exercise-photo leg-frame${large ? ' guide-sheet' : ''}" role="img" aria-label="${esc(m.name)} illustrative reference position" style="--pose:${m.lowerLegPose}"><img src="assets/exercises/lower-leg-reference.png" alt="" loading="lazy"></span>`;
     if (m.cell !== undefined && mediaBroken) return `<span class="exercise-photo photo-fallback" role="img" aria-label="${esc(m.name)} photo unavailable">Photo unavailable</span>`;
     if (m.cell !== undefined) return `<span class="exercise-photo sheet-photo${large ? ' guide-sheet' : ''}" data-cell="${m.cell}" role="img" aria-label="${esc(m.name)} reference pose" title="Illustrative reference photo"></span>`;
-    return `<img class="exercise-photo" src="${esc(m.images[1])}" alt="${esc(m.name)} reference position" loading="lazy" width="88" height="88">`;
+    return `<img class="exercise-photo" src="${esc(m.images[m.images.length - 1])}" alt="${esc(m.name)} reference position" loading="lazy" width="88" height="88">`;
   }
   function guide(id) {
     const m = movements[id];
@@ -234,7 +246,7 @@
   }
   function renderLibrary() {
     $('libraryFilter').innerHTML = '<option value="">All workouts</option>' + workouts.map(w => `<option value="${w.id}">${esc(w.name)}</option>`).join('');
-    $('libraryList').innerHTML = Object.entries(movements).filter(([id]) => id !== 'hacksquat' && !stretchMovements[id]).map(([id,m]) => `<article class="card" data-library-name="${esc(m.name.toLowerCase())}" data-library-id="${esc(id)}"><div class="exercise-info">${photo(id)}<div class="exercise-heading"><h2>${esc(m.name)}</h2></div></div>${guide(id)}</article>`).join('');
+    $('libraryList').innerHTML = Object.entries(movements).filter(([id]) => id !== 'hacksquat' && id !== 'tibialisRaise' && !stretchMovements[id]).map(([id,m]) => `<article class="card" data-library-name="${esc(m.name.toLowerCase())}" data-library-id="${esc(id)}"><div class="exercise-info">${photo(id)}<div class="exercise-heading"><h2>${esc(m.name)}</h2></div></div>${guide(id)}</article>`).join('');
   }
   function filterLibrary() {
     const query = $('librarySearch').value.trim().toLowerCase();

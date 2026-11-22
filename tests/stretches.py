@@ -16,7 +16,7 @@ with sync_playwright() as p:
     page.on('pageerror', lambda error: errors.append(str(error)))
     page.on('dialog', lambda dialog: dialog.accept())
     page.goto(URL)
-    for workout in ('powerPull', 'powerPush', 'powerLegs', 'pushCore', 'pullBiceps'):
+    for workout in ('powerPull', 'powerPush', 'powerLegs', 'pushCore', 'pullBiceps', 'calfMobility'):
         page.locator('#workoutChoice').select_option(workout)
         expect(page.get_by_role('heading', name='Stretches', exact=True)).to_be_visible()
         assert page.locator('[data-block-card^="stretch-"]').count() == 4
@@ -76,4 +76,4 @@ with sync_playwright() as p:
     assert len([b for b in stored['drafts'][old['workout']]['prescription']['blocks'] if b.get('isStretch')]) == 4
     context.close()
     browser.close()
-print('PASS: cooldowns on all five workouts, side counts, timers, saved history and draft migration.')
+print('PASS: cooldowns on all workouts, side counts, timers, saved history and draft migration.')

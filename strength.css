@@ -363,6 +363,30 @@ body.legacy-active {
   max-width:calc(50% - 4px);
   flex:0 1 280px;
 }
+.exercise-photo.leg-frame {
+  display:block;
+  position:relative;
+  overflow:hidden;
+  height:150px;
+}
+.leg-frame img,
+.guide-images .leg-frame img {
+  display:block;
+  position:absolute;
+  width:200%;
+  max-width:none;
+  height:auto;
+  top:50%;
+  left:calc(var(--pose) * -100%);
+  transform:translateY(-50%);
+  border-radius:0;
+}
+.guide-images .exercise-photo.leg-frame.guide-sheet {
+  width:min(100%,180px);
+  height:auto;
+  aspect-ratio:1 / 2;
+  flex-basis:auto;
+}
 .sheet-photo[data-cell="0"] {
   background-position:0 0;
 }

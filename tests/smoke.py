@@ -19,7 +19,7 @@ with sync_playwright() as p:
  expect(page.locator('#todayTitle')).to_be_visible()
  assert page.locator('#todayPlan input[type=checkbox]').count()==38
  data=page.evaluate('STRENGTH_PROGRAM')
- assert [sum(len(b['entries']) for b in w['blocks']) for w in data['workouts']]==[7,9,5,15,9]
+ assert [sum(len(b['entries']) for b in w['blocks']) for w in data['workouts']]==[7,9,5,15,9,2]
  assert [b['rest'] for b in data['workouts'][2]['blocks']]==[90,90,90,60,60]
  page.screenshot(path='/tmp/strength-mobile.png')
  # Seed legacy storage without loading the legacy app. New program must not touch it.
