@@ -77,7 +77,6 @@ with sync_playwright() as p:
     expect(page.locator('#timerCount')).to_have_text('02:00')
     act(page, 'timer-dismiss')
     act(page, 'done')
-    act(page, 'next')
     expect(page.locator('#exerciseTitle')).to_have_text('Shoulder rolls')
     media_loaded(page)
     expect(page.locator('#demoStep')).to_have_text('Lift shoulders toward your ears')
@@ -101,7 +100,9 @@ with sync_playwright() as p:
     expect(page.locator('#repValue')).to_have_value('7')
     act(page, 'sound')
     expect(page.locator('#soundButton')).to_have_text('Mute sound')
-    act(page, 'done')
+    page.locator('#setDone').dblclick(delay=70)
+    expect(page.locator('.set-label')).to_contain_text('Set 2 of 2')
+    assert [r['done'] for r in read(page)['drafts']['a']['exercises'][5]['records']] == [True, False]
     expect(page.locator('#timerLabel')).to_contain_text('Rest')
     expect(page.locator('#timerCount')).to_have_text('01:00')
     act(page, 'timer-add')
@@ -117,24 +118,26 @@ with sync_playwright() as p:
     assert page.evaluate('window.testPings') > before_ping
     assert sum(r['done'] for r in read(page)['drafts']['a']['exercises'][5]['records']) == 1
     page.reload()
-    expect(page.locator('#repValue')).to_have_value('7')
+    expect(page.locator('#repValue')).to_have_value('6')
+    expect(page.locator('.set-label')).to_contain_text('Set 2 of 2')
     expect(page.locator('#soundButton')).to_have_text('Enable sound')
     assert read(page)['drafts']['a']['exercises'][5]['records'][0]['done']
     options(page)
     act(page, 'add-set')
     assert read(page)['drafts']['a']['exercises'][5]['sets'] == 3
     options(page)
+    page.locator('[data-action="record"][data-index="0"]').click()
+    expect(page.locator('#repValue')).to_have_value('7')
+    options(page)
     act(page, 'undo')
     assert not read(page)['drafts']['a']['exercises'][5]['records'][0]['done']
     act(page, 'done')
-    act(page, 'next-record')
     expect(page.locator('.set-label')).to_contain_text('Set 2 of 3')
     act(page, 'next')
     expect(page.locator('#exerciseTitle')).to_have_text('Outward shoulder press')
     media_loaded(page)
     expect(page.locator('.set-label')).to_contain_text('Left')
     act(page, 'done')
-    act(page, 'next-record')
     expect(page.locator('.set-label')).to_contain_text('Right')
     phase(page, 'cooldown')
     expect(page.locator('#exerciseTitle')).to_have_text('Gentle butterfly stretch')
@@ -213,12 +216,12 @@ with sync_playwright() as p:
                 assert [(r['set'], r['side'], r['value']) for r in exercise['records']] == [(1, 'left', 10), (2, 'right', 10)]
                 expect(page.locator('.set-label')).to_contain_text('Left arm + right leg')
                 page.screenshot(path=str(ARTIFACTS / 'bird-dog-ipad.png'), full_page=True)
-            for _ in exercise['records']:
-                if page.locator('#setDone').count():
-                    act(page, 'done')
-                if page.locator('#nextRecord').inner_text() == 'Next set / side':
-                    act(page, 'next-record')
-            act(page, 'next')
+            previous_index = read(page)['drafts'][which]['index']
+            for count, _ in enumerate(exercise['records'], 1):
+                act(page, 'done')
+                saved = read(page)['drafts'][which]
+                assert sum(r['done'] for r in saved['exercises'][previous_index]['records']) == count
+                assert saved['index'] == previous_index + (count == len(exercise['records']))
             page.wait_for_function("""which => {
               const s=window.DadStore.state.drafts[which], title=document.getElementById('exerciseTitle');
               return s.index === s.exercises.length ? !title : title?.textContent === s.exercises[s.index].name;

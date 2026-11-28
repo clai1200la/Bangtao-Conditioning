@@ -36,7 +36,7 @@ Unreadable saved data is preserved. If storage fails or changes in another tab, 
 
 ## Timers and demonstrations
 
-Sound must be enabled by tapping **Enable sound** each page visit. The completion ping uses Web Audio; no audio download is needed. Timer deadlines survive reloads, but iPad background/locked-screen audio delivery is not guaranteed. A completed timer never marks a set or exercise done.
+Sound must be enabled by tapping **Enable sound** each page visit. The completion ping uses Web Audio; no audio download is needed. Timer deadlines survive reloads, but iPad background/locked-screen audio delivery is not guaranteed. A completed timer never marks a set or exercise done. Tapping **Set done** saves the count and immediately selects the next unfinished set or side. After the last set, it moves to the next exercise; after the final exercise, it opens workout review. The 60-second strength rest timer remains available while the next set or exercise is shown. A brief tap guard prevents an accidental double-tap from completing two sets. Completed sets remain available under **Sets, comfort & workout stages** for corrections or undo.
 
 Demonstrations are locally bundled AI-generated cartoon illustrations based on the user-approved character reference, with the requested slimmer body and motion arrows. Preserve the face from `assets/character-reference.webp` when changing future poses or body proportions. They are labeled two-position sequences or static position guides, not full-motion GIFs. Play/Pause controls the sequence; it does not count reps. See [asset notes](assets/SOURCES.md). The original photograph is not included. YouTube links are clearly labeled searches, not individually verified videos.
 

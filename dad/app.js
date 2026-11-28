@@ -12,6 +12,20 @@
   const button = (action, label, cls = '', attrs = '') => `<button data-action="${action}" class="${cls}" ${attrs}>${label}</button>`;
   let demoPlaying = false, demoFrame = 1, demoInterval = null, audio = null, audioReady = false, dialogAction = null;
   let feedback = '', reviewPartialConfirmed = false;
+  let completionReadyAt = 0, completionTimeout = null;
+
+  function protectCompletionTap() {
+    clearTimeout(completionTimeout);
+    const done = $('setDone');
+    if (!done) return;
+    const delay = completionReadyAt - performance.now();
+    done.disabled = delay > 0;
+    if (delay > 0) completionTimeout = setTimeout(protectCompletionTap, delay + 1);
+  }
+  function nextIncompleteRecord(exercise) {
+    const later = exercise.records.findIndex((r, i) => i > exercise.cursor && !r.done);
+    return later >= 0 ? later : exercise.records.findIndex(r => !r.done);
+  }
 
   function route() {
     const hash = location.hash.slice(1);
@@ -158,7 +172,7 @@
     const units = e.mode === 'time' ? 'Your seconds:' : e.mode === 'holds' ? 'Your holds:' : 'Your reps:';
     const targetLabel = e.mode === 'time' ? 'Target time' : e.mode === 'holds' ? 'Target holds' : e.id === 'hamstring' ? 'Target stretch' : 'Target reps';
     const counting = window.DAD_PROGRAM.countingGuides?.[e.id];
-    const nextIndex = e.records.findIndex((r, i) => i > e.cursor && !r.done);
+    const nextIndex = nextIncompleteRecord(e);
     return `<div class="workout-top"><div><h1>${escape(session.title)}</h1><p class="phase-label">${phaseNames[e.phase]} · Exercise ${ordinal} of ${phase.length}</p></div><div class="button-row">${soundButton()}${button('home', 'Choose workout', 'secondary')}</div></div>${status()}
       ${updatedPlanAvailable(session) ? `<aside class="notice"><p><strong>An updated workout plan is ready.</strong> This workout keeps the exercises and targets you started with. Review and save it, even if partly done, then start a new workout to use the update.</p>${button('review', 'Review & save current workout', 'secondary')}</aside>` : ''}
       <div class="workout-layout"><div>${demo(e)}</div><section class="instructions" aria-labelledby="exerciseTitle"><h2 id="exerciseTitle">${escape(e.name)}</h2>
@@ -242,7 +256,8 @@
       const img = $('demoImage');
       img.addEventListener('error', () => { $('demoFailure').hidden = false; if ($('demoButton')) $('demoButton').disabled = true; });
     }
-    if (focused && $(focused)) $(focused).focus({ preventScroll: true });
+    protectCompletionTap();
+    if (focused && $(focused)) ($(focused).disabled ? $('main') : $(focused)).focus({ preventScroll: true });
     storageNotice(); renderTimer();
   }
   function navigateExercise(index) {
@@ -295,13 +310,19 @@
     'show-position': () => { const { exercise } = current(), m = movementMedia(exercise); demoFrame = m.single ? 0 : 1 - demoFrame; showFrame(demoFrame); if (!m.single && !m.labels) $('demoCaption').textContent = `${m.caption || 'Position guide'} · picture ${demoFrame + 1} of 2`; },
     'rep-minus': () => changeCount(-1), 'rep-plus': () => changeCount(1),
     done: () => {
-      const { session, exercise, record } = current(); if (!record || record.done) return;
-      exercise.skipped = false; record.done = true; save();
+      const { session, exercise, record } = current(); if (!record || record.done || performance.now() < completionReadyAt) return;
+      completionReadyAt = performance.now() + 500;
+      exercise.skipped = false; record.done = true;
+      const nextIndex = nextIncompleteRecord(exercise);
+      if (nextIndex >= 0) exercise.cursor = nextIndex;
+      if (state().timer?.kind === 'hold' && state().timer.sessionId === session.id && state().timer.exerciseId === exercise.id) state().timer = null;
+      const saved = save();
       if (exercise.phase === 'strength') startTimer('rest', 60, 'Rest · ' + exercise.name, { sessionId: session.id, exerciseId: exercise.id });
-      render(); announce(`${exercise.name}: ${record.side !== 'both' ? recordSide(exercise, record) + ', ' : ''}saved.`);
+      if (nextIndex >= 0) render(); else navigateExercise(session.index + 1);
+      announce(`${exercise.name}: ${record.side !== 'both' ? recordSide(exercise, record) + ', ' : ''}${saved ? 'saved' : 'kept in memory'}. ${nextIndex >= 0 ? 'Next set or side is ready.' : session.index === session.exercises.length ? 'Workout ready for review.' : 'Next exercise is ready.'}`);
     },
     undo: () => { const { record, session, exercise } = current(); record.done = false; if (state().timer?.sessionId === session.id && state().timer.exerciseId === exercise.id) state().timer = null; save(); render(); },
-    'next-record': () => { const { exercise } = current(); const index = exercise.records.findIndex((r, i) => i > exercise.cursor && !r.done); if (index >= 0) exercise.cursor = index; save(); render(); },
+    'next-record': () => { const { exercise } = current(); const index = nextIncompleteRecord(exercise); if (index >= 0) exercise.cursor = index; save(); render(); },
     record: el => { current().exercise.cursor = Number(el.dataset.index); save(); render(); },
     'add-set': () => { const { exercise } = current(); if (exercise.sets >= 3 || exercise.mode === 'physio' || exercise.setsBySide) return; exercise.sets++; exercise.records.push(...makeRecords(exercise, exercise.sets)); save(); render(); },
     rest: () => { const { session, exercise } = current(); startTimer('rest', 60, 'Rest · ' + exercise.name, { sessionId: session.id, exerciseId: exercise.id }); },
