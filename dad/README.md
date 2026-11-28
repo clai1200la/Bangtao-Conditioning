@@ -22,6 +22,8 @@ Walks can be timed or logged afterward. The adjustable starting goal is 50 minut
 
 Change exercise content in `workouts.js`. A session snapshots its exercises when started, so later definition changes do not rewrite drafts or history.
 
+Each exercise explains a complete rep, hold or step, including how to count sides. A separate target area shows the saved prescription; “Your reps,” “Your holds” or “Your seconds” records the amount completed. Editing that count does not change the target. Counting guidance also appears in existing drafts without rewriting their saved records or prescribed dose.
+
 ## Data
 
 The only browser storage key used is `dad_workouts_v1`. It contains Dad’s settings, A/B drafts, history, walk draft and timer. The app never reads or changes the original application’s keys, and never calls `localStorage.clear()`.

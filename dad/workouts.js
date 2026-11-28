@@ -123,6 +123,26 @@
   });
   window.DAD_PROGRAM = {
     version: 1,
+    // Display guidance applies to existing drafts without changing their saved dose or records.
+    countingGuides: {
+      march: { label: 'One marching rep', text: 'Lift one knee and foot, then put the foot back down. The other leg is another rep. Here, record seconds rather than reps.' },
+      rolls: { label: 'One full rep', text: 'Lift both shoulders, roll them back and down, then return to relaxed shoulders. That is 1 roll. Count each roll in the reverse direction the same way.' },
+      ankles: { label: 'One full rep', text: 'Point both feet away, then pull both feet back toward your shins. The whole out-and-back movement is 1 rep.' },
+      catcow: { label: 'One full rep', text: 'Gently round your back, then release back to your starting position. That whole cycle is 1 rep. Use your physio’s version and counting method.' },
+      pelvic: { label: 'One full rep', text: 'Gently flatten your lower back toward the mat, then relax back to the starting position. That is 1 rep. Keep your hips down.' },
+      pushup: { label: 'One full rep', text: 'Bend toward the wall, then push back to the start. In and back out is 1 rep.' },
+      shoulder: { label: 'One full hold', text: 'Press gently into the wall for 5 seconds, then fully relax. That is 1 hold on that side. Complete the target on each side separately.' },
+      chair: { label: 'One full rep', text: 'Start sitting, stand up, then sit back down slowly. Sitting to standing and back to sitting is 1 rep.' },
+      calf: { label: 'One full rep', text: 'Lift both heels, then lower both heels to the floor. Up and back down is 1 rep.' },
+      blades: { label: 'One full rep', text: 'Lift your hands and elbows slightly, then lower them back to the mat. Up and back down is 1 rep. Keep your chest down.' },
+      bridge: { label: 'One full rep', text: 'Lift your hips a little, then lower them back to the mat. Up and back down is 1 rep.' },
+      sideleg: { label: 'One full rep', text: 'Lift one leg out to the side, then lower the foot back beside the other foot. Out and back is 1 rep on that side. Count each side separately.' },
+      birddog: { label: 'One full rep', text: 'Reach one arm and the opposite leg out, then return both to the mat. That is 1 rep; the other pair is another rep. Use your physio’s counting method if different.' },
+      walkout: { label: 'One walking step', text: 'Move one foot forward and put it down, then step with the other foot. Record your walking time in seconds; you do not need to count steps.' },
+      hamstring: { label: 'One full stretch', text: 'Ease into your prescribed stretch, hold for your physio’s time, then release. That is 1 stretch on that side. Follow your physio’s version and counting method.' },
+      calfstretch: { label: 'One full hold', text: 'Ease into the stretch, hold for 20 seconds, then release. That is 1 hold on that side. Repeat on the other side. Record seconds for each side.' },
+      shoulderstretch: { label: 'One full hold', text: 'Bring one arm across your chest, hold for 20 seconds, then release. That is 1 hold on that side. Repeat with the other arm. Record seconds for each side.' }
+    },
     // Presentation-only guides also clarify existing drafts without rewriting saved prescriptions.
     mediaGuides: {
       march: { still: false, labels: ['Both feet on the floor', 'Lift one knee and foot'], caption: 'Lift, lower, then change legs. Keep the steps small.' },
