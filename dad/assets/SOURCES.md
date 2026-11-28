@@ -6,14 +6,17 @@ For future artwork edits, use `character-reference.webp` as the fixed likeness a
 
 The images are local WebP files. Most contain start/end positions arranged in two columns; the app displays one pose at a time, with movement arrows and a Play/Pause control. These are **two-position illustrated sequences, not full-motion recordings or GIFs**. Marching, shoulder rolls and side leg raises include explicit movement labels. Stretch holds use still position guides. The shoulder isometric has a static close-up: its arrow indicates pressure against the wall, not arm movement.
 
-- `strength.webp`: wall push-up, chair sit-to-stand, supported calf raise.
+- `strength.webp`: wall push-up and supported calf raise. Its chair sit-to-stand row is retained for older saved workouts; new workouts use `squat.webp`.
 - `warmup.webp`: feet down then a small marching knee/foot lift, and seated ankle pumps. The middle row is unused; shoulder rolls use a closer view.
 - `rolls.webp`: a waist-up shoulder-roll guide, visibly shrugging up then rolling back and relaxing down.
-- `floor.webp`: gentle cat-cow, supine pelvic tilt with hips down, glute bridge.
+- `floor.webp`: gentle cat-cow and glute bridge. Its old pelvic-tilt row is unused; both new and existing pelvic-tilt drafts display `pelvic.webp`.
+- `pelvic.webp`: side-on neutral/flattened lower-back positions with magnified gap-to-mat-contact callouts. Hips stay on the mat.
+- `squat.webp`: standing and a deeper bodyweight squat, with an inclined straight-back guide arrow. Comfortable depth takes precedence over the pictured depth.
+- `butterfly.webp`: still gentle butterfly stretch, with knees relaxed above the floor and no downward force arrows.
 - `shoulders.webp`: shoulder-blade lift with chest down (middle row). Other rows are unused; the outward shoulder hold and supported side leg raise use separate, clearer guides.
 - `hip.webp`: supported side leg raise with the counter beside the body, a visible gap under the raised foot and an outward/upward movement arrow.
 - `isometric.webp`: outward shoulder hold with elbow at waist and back of hand at wall.
-- `birddog.webp`: hands-and-knees setup and opposite arm/leg reach.
+- `birddog.webp`: hands-and-knees setup and opposite arm/leg reach. Text identifies each arm/leg pair; the picture shows an example side.
 - `cooldown.webp`: an example seated hamstring position, calf stretch and across-chest shoulder stretch. The actual prescribed hamstring version takes precedence over the example.
 
 The images are instructional aids, not clinical validation of suitability or exact movement range. Follow the accompanying text and the physiotherapist’s instructions. Physiotherapy exercise doses that were not supplied remain unspecified in the app.

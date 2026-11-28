@@ -29,8 +29,8 @@
     },
     pelvic: {
       name: 'Pelvic tilt', mode: 'physio', target: 'Follow your physio’s sets and reps',
-      media: media('floor', 1),
-      steps: ['Lie on your back with knees bent and feet flat.', 'Gently flatten your lower back toward the mat, then relax.', 'Keep your hips down. Follow your physio’s dose.'],
+      media: media('pelvic', 0, { rows: 1 }),
+      steps: ['Lie on your back with knees bent and feet flat.', 'Gently tip your pelvis so your lower back meets the mat, then relax.', 'Keep your hips down. Do not force the movement. Follow your physio’s dose.'],
       search: 'NHS lying pelvic tilt exercise'
     },
     pushup: {
@@ -47,12 +47,12 @@
       easier: 'Use gentle pressure. Ask your physio to check the position.',
       search: 'NHS shoulder isometric external rotation wall elbow side'
     },
-    chair: {
-      name: 'Chair sit-to-stand', mode: 'reps', reps: 6, target: '6–10 reps',
-      media: media('strength', 1),
-      steps: ['Use a sturdy chair without wheels, secured against a wall.', 'Feet flat. Lean forward from your hips and stand up.', 'Sit back down slowly. Use your hands if needed.'],
-      easier: 'Use your hands for support and a comfortable chair height.',
-      search: 'NHS sit to stand exercise'
+    squat: {
+      name: 'Bodyweight squat', mode: 'reps', reps: 6, target: '6–10 reps',
+      media: media('squat', 0, { rows: 1 }),
+      steps: ['Stand with feet about shoulder-width apart. Hold a stable counter if needed.', 'Bend your hips and knees. Lower as far as comfortable, keeping heels down and back straight.', 'Your torso can lean forward from the hips. Stand fully back up.'],
+      easier: 'The picture shows a lower squat. Use a smaller depth if needed; do not force it or work through pain.',
+      search: 'NHS physiotherapy bodyweight squat technique'
     },
     calf: {
       name: 'Supported calf raise', mode: 'reps', reps: 6, target: '6–10 reps',
@@ -81,10 +81,10 @@
       search: 'NHS standing supported hip abduction side leg raise'
     },
     birddog: {
-      name: 'Bird dog', mode: 'physio', target: 'Follow your physio’s sets and reps',
+      name: 'Bird dog', mode: 'reps', reps: 10, sides: true, setsBySide: true, target: '10 reps with each arm/leg pair',
       media: media('birddog', 0, { rows: 1 }),
-      steps: ['Use the version your physio assigned.', 'From hands and knees, reach one arm and the opposite leg out.', 'Keep hips level and back still. Return slowly and change sides.'],
-      easier: 'Do not add holds, sets or a harder variation beyond your physio’s instructions.',
+      steps: ['Start on hands and knees. Use the version your physio assigned.', 'Reach one arm and the opposite leg out. Return both slowly to the mat.', 'Do 10 reps with that same pair, then 10 with the other pair. Keep hips level and back still.'],
+      easier: 'Keep the reach controlled. Follow any different dose or hold time your physio gives you.',
       search: 'NHS physiotherapy bird dog opposite arm leg exercise'
     },
     walkout: {
@@ -92,6 +92,13 @@
       media: media('warmup', 0, { still: true, caption: 'Position guide · take easy steps' }),
       steps: ['Walk slowly around a clear, level space.', 'Let your breathing settle.', 'Use small, comfortable steps.'],
       search: 'NHS walking cool down'
+    },
+    butterfly: {
+      name: 'Gentle butterfly stretch', mode: 'time', seconds: 20, target: '20 seconds · gentle hold',
+      media: media('butterfly', 0, { single: true, still: true, caption: 'Position guide · let knees relax; do not press them down' }),
+      steps: ['Sit tall on the mat, with the soles of your feet together and knees out.', 'Keep feet a comfortable distance away. Let the knees relax; do not push them down.', 'Hold gently and breathe normally. Release if your back or knees hurt.'],
+      easier: 'A folded cushion can support your seat. Do not fold forward or force your knees toward the floor.',
+      search: 'physiotherapy gentle seated butterfly stretch'
     },
     hamstring: {
       name: 'Hamstring stretch', mode: 'physio', target: 'Follow your physio’s position and hold time',
@@ -113,7 +120,7 @@
     }
   };
   const warmup = ['march', 'rolls', 'ankles', 'catcow', 'pelvic'];
-  const cooldown = ['walkout', 'hamstring', 'calfstretch', 'shoulderstretch'];
+  const cooldown = ['butterfly', 'hamstring', 'calfstretch', 'shoulderstretch'];
   const makeWorkout = (id, title, strength) => ({
     id, title,
     exercises: [['warmup', warmup], ['strength', strength], ['cooldown', cooldown]].flatMap(([phase, ids]) => ids.map(key => ({
@@ -129,16 +136,18 @@
       rolls: { label: 'One full rep', text: 'Lift both shoulders, roll them back and down, then return to relaxed shoulders. That is 1 roll. Count each roll in the reverse direction the same way.' },
       ankles: { label: 'One full rep', text: 'Point both feet away, then pull both feet back toward your shins. The whole out-and-back movement is 1 rep.' },
       catcow: { label: 'One full rep', text: 'Gently round your back, then release back to your starting position. That whole cycle is 1 rep. Use your physio’s version and counting method.' },
-      pelvic: { label: 'One full rep', text: 'Gently flatten your lower back toward the mat, then relax back to the starting position. That is 1 rep. Keep your hips down.' },
+      pelvic: { label: 'One full rep', text: 'Gently close the gap under your lower back so it meets the mat, then relax. That is 1 rep. Keep your hips down and do not force it.' },
       pushup: { label: 'One full rep', text: 'Bend toward the wall, then push back to the start. In and back out is 1 rep.' },
       shoulder: { label: 'One full hold', text: 'Press gently into the wall for 5 seconds, then fully relax. That is 1 hold on that side. Complete the target on each side separately.' },
       chair: { label: 'One full rep', text: 'Start sitting, stand up, then sit back down slowly. Sitting to standing and back to sitting is 1 rep.' },
+      squat: { label: 'One full rep', text: 'Start standing, lower into a squat, then stand fully back up. Down and back up is 1 rep.' },
       calf: { label: 'One full rep', text: 'Lift both heels, then lower both heels to the floor. Up and back down is 1 rep.' },
       blades: { label: 'One full rep', text: 'Lift your hands and elbows slightly, then lower them back to the mat. Up and back down is 1 rep. Keep your chest down.' },
       bridge: { label: 'One full rep', text: 'Lift your hips a little, then lower them back to the mat. Up and back down is 1 rep.' },
       sideleg: { label: 'One full rep', text: 'Lift one leg out to the side, then lower the foot back beside the other foot. Out and back is 1 rep on that side. Count each side separately.' },
-      birddog: { label: 'One full rep', text: 'Reach one arm and the opposite leg out, then return both to the mat. That is 1 rep; the other pair is another rep. Use your physio’s counting method if different.' },
+      birddog: { label: 'One full rep', text: 'Reach one arm and the opposite leg out, then return both to the mat. That is 1 rep. Follow the side and target shown for this workout.' },
       walkout: { label: 'One walking step', text: 'Move one foot forward and put it down, then step with the other foot. Record your walking time in seconds; you do not need to count steps.' },
+      butterfly: { label: 'One full hold', text: 'Settle into a gentle stretch, hold for the target time, then relax out of the position. Record seconds, not reps.' },
       hamstring: { label: 'One full stretch', text: 'Ease into your prescribed stretch, hold for your physio’s time, then release. That is 1 stretch on that side. Follow your physio’s version and counting method.' },
       calfstretch: { label: 'One full hold', text: 'Ease into the stretch, hold for 20 seconds, then release. That is 1 hold on that side. Repeat on the other side. Record seconds for each side.' },
       shoulderstretch: { label: 'One full hold', text: 'Bring one arm across your chest, hold for 20 seconds, then release. That is 1 hold on that side. Repeat with the other arm. Record seconds for each side.' }
@@ -147,11 +156,14 @@
     mediaGuides: {
       march: { still: false, labels: ['Both feet on the floor', 'Lift one knee and foot'], caption: 'Lift, lower, then change legs. Keep the steps small.' },
       rolls: { sheet: 'rolls', row: 0, rows: 1, still: false, initialFrame: 0, labels: ['Lift shoulders toward your ears', 'Roll back and relax shoulders down'], caption: 'Keep arms loose. Reverse the roll for the other direction.' },
+      pelvic: { sheet: 'pelvic', row: 0, rows: 1, still: false, initialFrame: 0, labels: ['Relaxed · small gap under lower back', 'Gently flatten · lower back meets mat'], caption: 'Close-up shows the lower-back gap closing. Keep your hips on the mat.' },
+      squat: { labels: ['Stand tall', 'Lower into a squat · keep back straight'], caption: 'Straight arrow follows your back. Lean from the hips; use a comfortable depth.' },
+      birddog: { labels: ['Start on hands and knees', 'Reach opposite arm and leg'], caption: 'Picture shows one pair. Reverse the arm and leg for the other side.' },
       sideleg: { still: false, labels: ['Both feet on the floor', 'Lift leg out to the side'], caption: 'Lift the foot off the floor. Keep toes forward and body upright.' }
     },
     workouts: [
-      makeWorkout('a', 'Day A · Upper emphasis', ['pushup', 'shoulder', 'chair', 'calf', 'blades', 'bridge', 'birddog']),
-      makeWorkout('b', 'Day B · Lower emphasis', ['chair', 'bridge', 'sideleg', 'calf', 'pushup', 'blades', 'birddog'])
+      makeWorkout('a', 'Day A · Upper emphasis', ['pushup', 'shoulder', 'squat', 'calf', 'blades', 'bridge', 'birddog']),
+      makeWorkout('b', 'Day B · Lower emphasis', ['squat', 'bridge', 'sideleg', 'calf', 'pushup', 'blades', 'birddog'])
     ]
   };
 })();

@@ -13,9 +13,10 @@
   const exercise = e => object(e) && id(e.id) && string(e.name, 100) && string(e.target, 300) &&
     ['warmup', 'strength', 'cooldown'].includes(e.phase) && ['reps', 'holds', 'time', 'physio'].includes(e.mode) &&
     integer(e.sets, 1, 10) && Array.isArray(e.steps) && e.steps.length <= 10 && e.steps.every(x => string(x, 500)) &&
+    (e.setsBySide === undefined || e.setsBySide === true && e.sides === true && e.sets === 2 && e.records?.length === 2 && e.records.every((r, i) => r.set === i + 1 && r.side === (i === 0 ? 'left' : 'right'))) &&
     (!e.easier || string(e.easier)) && (!e.search || string(e.search, 200)) &&
     (!e.seconds || integer(e.seconds, 1, 3600)) && (!e.reps || integer(e.reps, 1, 999)) &&
-    object(e.media) && ['strength', 'warmup', 'floor', 'shoulders', 'cooldown', 'isometric', 'birddog', 'hip', 'rolls'].includes(e.media.sheet) &&
+    object(e.media) && ['strength', 'warmup', 'floor', 'shoulders', 'cooldown', 'isometric', 'birddog', 'hip', 'rolls', 'pelvic', 'squat', 'butterfly'].includes(e.media.sheet) &&
     integer(e.media.row, 0, 2) && (!e.media.rows || [1, 3].includes(e.media.rows)) && (!e.media.caption || string(e.media.caption, 200)) &&
     Array.isArray(e.records) && e.records.length > 0 && e.records.length <= 20 && e.records.every(record) &&
     new Set(e.records.map(r => r.id)).size === e.records.length && integer(e.cursor, 0, e.records.length - 1) && typeof e.skipped === 'boolean';

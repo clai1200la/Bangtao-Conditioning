@@ -14,13 +14,15 @@ Open `http://localhost:8765/dad/`. No package installation or build is required.
 
 ## Workouts
 
-Two full-body strength days with different emphases, each including warm-up and stretching cooldown. Two working sets are the starting draft; a third is optional. Bird dog, cat-cow, pelvic tilts and hamstring stretching retain the physiotherapist’s prescribed dose rather than assuming a count. The bird dog is included in both strength sessions.
+Two full-body strength days with different emphases, each including warm-up and stretching cooldown. Two working sets are the starting draft; a third is optional for strength exercises other than bird dog. Bird dog uses the user-selected 10 reps with one arm/leg pair, followed by 10 with the other: exactly two sets and 20 reps total. Cat-cow, pelvic tilts and hamstring stretching retain the physiotherapist’s prescribed dose rather than assuming a count. Bird dog and bodyweight squats are included in both strength sessions. The cooldown uses butterfly, hamstring, calf and across-chest stretches; it no longer starts with an easy walk. Review butterfly and any future 90/90 hip stretch with the physiotherapist; 90/90 is not included in this plan.
 
-Review new exercise choices with the physiotherapist, especially shoulder loading, knee-bending range, bridges and prone work. Keep cat-cow gentle. The shoulder-blade lift keeps the chest down. The outward shoulder hold uses pressure from the back of the hand, not an elbow push or an overhead press.
+Review new exercise choices with the physiotherapist, especially shoulder loading, knee-bending range, bridges and prone work. Keep cat-cow gentle. The deeper squat drawing is an example, not a required depth; use a comfortable range and optional counter support. The pelvic-tilt close-up highlights lower-back contact with the mat while hips stay down. The shoulder-blade lift keeps the chest down. The outward shoulder hold uses pressure from the back of the hand, not an elbow push or an overhead press.
 
 Walks can be timed or logged afterward. The adjustable starting goal is 50 minutes weekly (five 10-minute walks); shorter walks are fine. The longer-term general target is 150 moderate-intensity minutes weekly, built toward as comfortable. No automatic progression or GPS is used.
 
 Change exercise content in `workouts.js`. A session snapshots its exercises when started, so later definition changes do not rewrite drafts or history.
+
+If a saved draft uses the older exercise plan, a notice offers **Review & save current workout**. Save that workout, even if partial, then start a new workout to use the updated plan. Existing records are never silently relabeled as different exercises.
 
 Each exercise explains a complete rep, hold or step, including how to count sides. A separate target area shows the saved prescription; “Your reps,” “Your holds” or “Your seconds” records the amount completed. Editing that count does not change the target. Counting guidance also appears in existing drafts without rewriting their saved records or prescribed dose.
 

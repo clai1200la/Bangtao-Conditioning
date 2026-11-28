@@ -137,7 +137,7 @@ with sync_playwright() as p:
     act(page, 'next-record')
     expect(page.locator('.set-label')).to_contain_text('Right')
     phase(page, 'cooldown')
-    expect(page.locator('#exerciseTitle')).to_have_text('Easy walk')
+    expect(page.locator('#exerciseTitle')).to_have_text('Gentle butterfly stretch')
     act(page, 'next')
     expect(page.locator('#exerciseTitle')).to_have_text('Hamstring stretch')
     expect(page.locator('.physio-note')).to_contain_text('physio’s dose')
@@ -209,7 +209,9 @@ with sync_playwright() as p:
             media_loaded(page)
             exercise = page.evaluate('(which)=>DadStore.state.drafts[which].exercises[DadStore.state.drafts[which].index]', which)
             if exercise['id'] == 'birddog':
-                assert exercise['mode'] == 'physio' and exercise['records'][0]['value'] == 0
+                assert exercise['mode'] == 'reps' and exercise['sets'] == 2
+                assert [(r['set'], r['side'], r['value']) for r in exercise['records']] == [(1, 'left', 10), (2, 'right', 10)]
+                expect(page.locator('.set-label')).to_contain_text('Left arm + right leg')
                 page.screenshot(path=str(ARTIFACTS / 'bird-dog-ipad.png'), full_page=True)
             for _ in exercise['records']:
                 if page.locator('#setDone').count():
