@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#215f4b">
+  <meta name="description" content="Simple strength, mobility and walking workouts. Saved on your device.">
+  <title>Dad’s workouts</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css?v=motion-guides-20261128">
+  <script src="workouts.js?v=motion-guides-20261128" defer></script>
+  <script src="storage.js" defer></script>
+  <script src="app.js?v=motion-guides-20261128" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to workout</a>
+  <header class="site-header">
+    <a class="brand" href="#today">Dad’s workouts</a>
+    <nav aria-label="Main navigation">
+      <a href="#today" id="navToday">Today</a>
+      <a href="#history" id="navHistory">History &amp; Backup</a>
+    </nav>
+  </header>
+  <div id="storageNotice" class="notice danger" role="alert" hidden></div>
+  <div id="announcement" class="sr-only" role="status" aria-live="polite"></div>
+  <main id="main" tabindex="-1"></main>
+  <aside id="timerPanel" class="timer-panel" aria-label="Workout timer" hidden></aside>
+  <dialog id="confirmDialog" aria-labelledby="dialogTitle">
+    <h2 id="dialogTitle"></h2><p id="dialogMessage"></p>
+    <div class="button-row"><button id="dialogCancel" class="secondary">Go back</button><button id="dialogConfirm">Save workout</button></div>
+  </dialog>
+  <noscript><p class="notice">Please enable JavaScript to use the workout tracker.</p></noscript>
+</body>
+</html>

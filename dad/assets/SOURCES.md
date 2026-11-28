@@ -1,0 +1,29 @@
+# Illustration and exercise notes
+
+These cartoon illustrations were generated for this app using the user-provided photograph and the cartoon character reference approved by the user. They show the same man with rectangular glasses, a navy sports shirt with white shoulder stripes, charcoal trousers and grey shoes. The body was made approximately 10% slimmer at the user’s request; the face retains the fuller cheeks and shape from the photograph. The original photograph is not included.
+
+For future artwork edits, use `character-reference.webp` as the fixed likeness and cartoon-style reference. Change the body, pose or arrows independently. Do not use a small exercise-face drawing as the identity reference for the next edit, since successive redraws can drift from the approved likeness.
+
+The images are local WebP files. Most contain start/end positions arranged in two columns; the app displays one pose at a time, with movement arrows and a Play/Pause control. These are **two-position illustrated sequences, not full-motion recordings or GIFs**. Marching, shoulder rolls and side leg raises include explicit movement labels. Stretch holds use still position guides. The shoulder isometric has a static close-up: its arrow indicates pressure against the wall, not arm movement.
+
+- `strength.webp`: wall push-up, chair sit-to-stand, supported calf raise.
+- `warmup.webp`: feet down then a small marching knee/foot lift, and seated ankle pumps. The middle row is unused; shoulder rolls use a closer view.
+- `rolls.webp`: a waist-up shoulder-roll guide, visibly shrugging up then rolling back and relaxing down.
+- `floor.webp`: gentle cat-cow, supine pelvic tilt with hips down, glute bridge.
+- `shoulders.webp`: shoulder-blade lift with chest down (middle row). Other rows are unused; the outward shoulder hold and supported side leg raise use separate, clearer guides.
+- `hip.webp`: supported side leg raise with the counter beside the body, a visible gap under the raised foot and an outward/upward movement arrow.
+- `isometric.webp`: outward shoulder hold with elbow at waist and back of hand at wall.
+- `birddog.webp`: hands-and-knees setup and opposite arm/leg reach.
+- `cooldown.webp`: an example seated hamstring position, calf stretch and across-chest shoulder stretch. The actual prescribed hamstring version takes precedence over the example.
+
+The images are instructional aids, not clinical validation of suitability or exact movement range. Follow the accompanying text and the physiotherapist’s instructions. Physiotherapy exercise doses that were not supplied remain unspecified in the app.
+
+Written exercise content was drafted with reference to:
+
+- [NHS home strength exercises](https://www.nhs.uk/live-well/exercise/strength-exercises/)
+- [AAOS spine conditioning guidance](https://www.orthoinfo.org/bodypart/back/spine-conditioning-program/)
+- [AAOS shoulder conditioning guidance](https://www.orthoinfo.org/bodypart/shoulder/rotator-cuff-and-shoulder-conditioning-program/)
+- [NHS walking guidance](https://www.nhs.uk/live-well/exercise/walking-for-health/)
+- [CDC older adult activity guidance](https://www.cdc.gov/physical-activity-basics/guidelines/older-adults.html)
+
+No NHS or AAOS artwork was copied. The GIF collections considered during development had separate media licensing requirements, so none were bundled. YouTube shortcuts search for the named movement and are labeled as searches; individual results have not been clinically verified.
