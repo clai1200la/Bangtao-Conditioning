@@ -16,10 +16,14 @@
 
   function protectCompletionTap() {
     clearTimeout(completionTimeout);
-    const done = $('setDone');
-    if (!done) return;
     const delay = completionReadyAt - performance.now();
-    done.disabled = delay > 0;
+    for (const control of document.querySelectorAll('button[data-action]')) {
+      if (delay > 0 && !control.disabled) {
+        control.dataset.completionLocked = 'true'; control.disabled = true;
+      } else if (delay <= 0 && control.dataset.completionLocked) {
+        delete control.dataset.completionLocked; control.disabled = false;
+      }
+    }
     if (delay > 0) completionTimeout = setTimeout(protectCompletionTap, delay + 1);
   }
   function nextIncompleteRecord(exercise) {
@@ -98,6 +102,7 @@
     const title = t.completed ? `${t.kind === 'rest' ? 'Rest' : t.kind === 'walk' ? 'Walk target' : 'Hold'} complete` : t.label;
     panel.innerHTML = `<div><div class="timer-heading"><strong id="timerLabel">${escape(title)}</strong><span id="timerCount" class="timer-count" aria-live="off">${clock(remaining(t))}</span></div><p class="audio-tip">${audioReady && state().settings.sound ? 'Sound on · keep this page open' : 'Sound off · use Enable sound above'}</p></div>
       <div class="button-row">${!t.completed ? button('timer-pause', t.running ? 'Pause' : 'Resume', 'secondary') + button('timer-add', '+30 sec', 'secondary') : ''}${button('timer-dismiss', t.completed ? 'Dismiss' : t.kind === 'rest' ? 'Skip rest' : 'Cancel timer', 'secondary')}</div>`;
+    protectCompletionTap();
   }
   function tick() {
     const timer = state().timer;
@@ -111,6 +116,12 @@
     return (exercise.setsBySide ? [setNumber === 1 ? 'left' : 'right'] : exercise.sides ? ['left', 'right'] : ['both']).map(side => ({ id: uid(), set: setNumber, side,
       value: exercise.mode === 'time' ? exercise.seconds : exercise.reps || 0, done: false }));
   }
+  function makeSession(id) {
+    const definition = window.DAD_PROGRAM.workouts.find(w => w.id === id);
+    const exercises = structuredClone(definition.exercises).map(ex => ({ ...ex, skipped: false, cursor: 0,
+      records: Array.from({ length: ex.sets }, (_, i) => makeRecords(ex, i + 1)).flat() }));
+    return { id: uid(), workoutId: id, title: definition.title, startedAt: new Date().toISOString(), index: 0, exercises, notes: '' };
+  }
   function startWorkout(id) {
     if (state().walkDraft?.running) {
       state().walkDraft.elapsed = walkElapsed(); state().walkDraft.running = false; state().walkDraft.started = 0;
@@ -118,10 +129,7 @@
       save();
     }
     if (!state().drafts[id]) {
-      const definition = window.DAD_PROGRAM.workouts.find(w => w.id === id);
-      const exercises = structuredClone(definition.exercises).map(ex => ({ ...ex, skipped: false, cursor: 0,
-        records: Array.from({ length: ex.sets }, (_, i) => makeRecords(ex, i + 1)).flat() }));
-      state().drafts[id] = { id: uid(), workoutId: id, title: definition.title, startedAt: new Date().toISOString(), index: 0, exercises, notes: '' };
+      state().drafts[id] = makeSession(id);
       save();
     }
     const t = state().timer;
@@ -134,8 +142,26 @@
   function updatedPlanAvailable(session) {
     const latest = window.DAD_PROGRAM.workouts.find(w => w.id === session.workoutId);
     return latest && (latest.exercises.length !== session.exercises.length || latest.exercises.some((e, i) =>
-      ['id', 'mode', 'reps', 'seconds', 'setsBySide'].some(key => e[key] !== session.exercises[i]?.[key])));
+      ['id', 'mode', 'reps', 'seconds', 'setsBySide', 'sides'].some(key => e[key] !== session.exercises[i]?.[key]) || e.sets > session.exercises[i]?.sets));
   }
+  function updateWorkout(id) {
+    const old = state().drafts[id];
+    if (!old || !updatedPlanAvailable(old)) return startWorkout(id);
+    const archived = structuredClone(old);
+    archived.finishedAt = new Date().toISOString();
+    archived.partial = completeCount(old) !== old.exercises.length;
+    state().history.push(archived);
+    state().drafts[id] = makeSession(id);
+    if (state().timer?.sessionId === old.id) state().timer = null;
+    save(); startWorkout(id); render();
+    window.scrollTo({ top: 0 }); $('main').focus({ preventScroll: true });
+  }
+  function updatePlanView(session) {
+    return `<h1>Updated workout ready</h1><p>The new plan has stretch timers, clear left/right sets, and a stretching-only cooldown.</p>
+      <p>Your current records will be saved to History, then the updated workout will start. Previous records stay unchanged.</p>
+      <div class="button-row">${button('update-workout', 'Use updated workout', '', `data-id="${session.workoutId}"`)}${button('export', 'Download backup', 'secondary')}${button('home', 'Choose workout', 'secondary')}</div>`;
+  }
+  const setSummary = e => e.sides && !e.setsBySide ? `${e.sets} sets per side · ${e.sets * 2} sets total` : `${e.sets} sets`;
   function weeklyMinutes() {
     const monday = new Date(); monday.setHours(0, 0, 0, 0); monday.setDate(monday.getDate() - (monday.getDay() + 6) % 7);
     const sunday = new Date(monday); sunday.setDate(sunday.getDate() + 6);
@@ -146,16 +172,21 @@
     return `<div class="home-intro"><h1>Let’s move today</h1><p class="muted">Choose strength or a walk. Go at your own pace.</p></div>${status()}
       <div class="home-layout"><div><div class="choice-list">${window.DAD_PROGRAM.workouts.map(w => {
         const draft = state().drafts[w.id];
-        return `<section class="workout-choice"><h2>${escape(w.title)}</h2><p>Warm-up, full-body strength and stretching.</p><p class="muted small">About 45 minutes · 2 sets, with an optional third</p>${draft ? `<p class="small">In progress · ${completeCount(draft)} of ${draft.exercises.length} exercises done</p>` : ''}<div class="button-row">${button('start-workout', draft ? 'Resume workout' : 'Start workout', '', `data-id="${w.id}"`)}${button('plan', 'See exercises', 'secondary', `data-id="${w.id}"`)}</div><div id="plan-${w.id}" hidden><ol class="plain-list">${w.exercises.map(e => `<li><strong>${phaseNames[e.phase]}:</strong> ${escape(e.name)} · ${escape(e.target)}</li>`).join('')}</ol></div></section>`;
+        return `<section class="workout-choice"><h2>${escape(w.title)}</h2><p>Warm-up, full-body strength and stretching.</p><p class="muted small">2 sets per exercise · 2 per side where needed</p>${draft ? `<p class="small">In progress · ${completeCount(draft)} of ${draft.exercises.length} exercises done</p>${updatedPlanAvailable(draft) ? '<p class="small">Switching to the update saves your current records in History.</p>' : ''}` : ''}<div class="button-row">${button(draft && updatedPlanAvailable(draft) ? 'update-workout' : 'start-workout', draft && updatedPlanAvailable(draft) ? 'Use updated workout' : draft ? 'Resume workout' : 'Start workout', '', `data-id="${w.id}"`)}${button('plan', 'See exercises', 'secondary', `data-id="${w.id}"`)}</div><div id="plan-${w.id}" hidden><ol class="plain-list">${w.exercises.map(e => `<li><strong>${phaseNames[e.phase]}:</strong> ${escape(e.name)} · ${setSummary(e)} · ${escape(e.target)}</li>`).join('')}</ol></div></section>`;
       }).join('')}<section class="workout-choice"><h2>Take a walk</h2><p>Start with 5–10 comfortable minutes. Short walks count.</p><a href="#walk" class="button">Start / log a walk</a></section></div>
       <p class="data-note">Your workouts are saved in this browser on this device. They do not automatically sync to another iPad, phone or computer. Download a backup regularly.</p></div>
       <aside class="week-walking"><h2>Walking this week</h2><div class="total">${minutes} / ${goal} min</div><meter aria-label="Weekly walking minutes" min="0" max="${goal}" value="${Math.min(minutes, goal)}"></meter><p class="small">Monday–Sunday · starting goal ${goal} minutes. Build toward 150 minutes of moderately brisk walking per week as comfortable.</p>
       <h3>A flexible week</h3><ul class="week-plan"><li>Monday: Day A + short walk</li><li>Tuesday & Wednesday: walk</li><li>Thursday: Day B + short walk</li><li>Friday: walk</li><li>Weekend: rest or an optional walk</li></ul><p class="small">Keep strength days apart. No need to catch up or do extra sets after a missed day.</p>${soundButton()}</aside></div>
-      <details><summary>Program notes & exercise guidance</summary><p>This starting program is a draft to review with your physiotherapist, especially knee-bending depth, bridges, shoulder loading and prone work. Stop an exercise that causes pain and ask for advice. Do not force a stretch.</p><p>Cat-cow, pelvic tilts and hamstring stretching use your physio’s dose. Bird dog is set to 10 reps with one arm/leg pair, then 10 with the other, as selected for this plan. Follow your physio’s instructions if they differ. Shoulder-blade lifts are light upper-back work; they do not provide the same pulling resistance as rows.</p><p>Start with 2 sets. Bird dog stays at one set per side. For other strength exercises, add a third only when the current amount feels comfortable and technique stays controlled. Use your physio’s advice to progress.</p><p>Illustrations are AI-generated, with arrows and labeled positions. They are guides, not recordings or a substitute for a demonstration from your physio. See <a href="assets/SOURCES.md">image notes and sources</a>.</p><p>Exercise references: <a href="https://www.nhs.uk/live-well/exercise/strength-exercises/" target="_blank" rel="noopener noreferrer">NHS home strength exercises</a> · <a href="https://www.cdc.gov/physical-activity-basics/guidelines/older-adults.html" target="_blank" rel="noopener noreferrer">CDC activity guidance</a>.</p></details>`;
+      <details><summary>Program notes & exercise guidance</summary><p>Use a comfortable range and controlled movements. Stop an exercise that causes pain and ask for advice. Do not force a stretch.</p><p>Every exercise starts with 2 sets. For one-sided exercises, do 2 sets on each side: 4 sets total. Bird dog uses 10 reps per side in each round. Butterfly stretches both legs together, so it has 2 holds total.</p><p>Cooldown holds start at 30 seconds. You can shorten a hold if needed. Breathe normally and do not bounce.</p><p>Illustrations are guides, not recordings. See <a href="assets/SOURCES.md">image notes and sources</a>. Stretch timing follows <a href="https://www.mayoclinic.org/healthy-lifestyle/fitness/in-depth/stretching/art-20546848" target="_blank" rel="noopener noreferrer">Mayo Clinic stretching guidance</a> and <a href="https://myhealth.alberta.ca/health/tests-treatments/pages/conditions.aspx?hwid=ta1694" target="_blank" rel="noopener noreferrer">Alberta Health flexibility guidance</a>.</p></details>`;
   }
   const movementMedia = exercise => ({ ...exercise.media, ...window.DAD_PROGRAM.mediaGuides?.[exercise.id] });
   const mediaCaption = (m, frame) => m.labels ? `Two-position guide · ${m.caption}` : m.caption || (m.still ? 'Position guide · arrows show stretch direction' : `2-position illustration · position ${frame + 1} of 2`);
-  const recordSide = (exercise, record) => record.side === 'both' ? '' : exercise.id === 'birddog' ? (record.side === 'left' ? 'Left arm + right leg' : 'Right arm + left leg') : record.side[0].toUpperCase() + record.side.slice(1);
+  const recordSide = (exercise, record) => {
+    if (record.side === 'both') return '';
+    const side = record.side[0].toUpperCase() + record.side.slice(1);
+    if (exercise.id === 'birddog') return record.side === 'left' ? 'Left arm + right leg' : 'Right arm + left leg';
+    return `${side} ${['shoulder', 'shoulderstretch'].includes(exercise.id) ? 'arm' : 'leg'}`;
+  };
   function demo(exercise) {
     const m = movementMedia(exercise), rows = m.rows || 3;
     demoFrame = m.initialFrame ?? 1;
@@ -166,33 +197,35 @@
       <p class="demo-caption" id="demoCaption">${escape(mediaCaption(m, demoFrame))}</p>`;
   }
   function exerciseView(session) {
+    if (updatedPlanAvailable(session)) return updatePlanView(session);
     if (session.index >= session.exercises.length) return review(session);
     const e = session.exercises[session.index], rec = e.records[e.cursor], phase = session.exercises.filter(x => x.phase === e.phase);
     const ordinal = phase.indexOf(e) + 1, side = rec.side === 'both' ? '' : `${recordSide(e, rec)} · `;
     const units = e.mode === 'time' ? 'Your seconds:' : e.mode === 'holds' ? 'Your holds:' : 'Your reps:';
-    const targetLabel = e.mode === 'time' ? 'Target time' : e.mode === 'holds' ? 'Target holds' : e.id === 'hamstring' ? 'Target stretch' : 'Target reps';
+    const targetLabel = e.mode === 'time' ? 'Target time' : e.mode === 'holds' ? 'Target holds' : 'Target reps';
     const counting = window.DAD_PROGRAM.countingGuides?.[e.id];
     const nextIndex = nextIncompleteRecord(e);
     return `<div class="workout-top"><div><h1>${escape(session.title)}</h1><p class="phase-label">${phaseNames[e.phase]} · Exercise ${ordinal} of ${phase.length}</p></div><div class="button-row">${soundButton()}${button('home', 'Choose workout', 'secondary')}</div></div>${status()}
-      ${updatedPlanAvailable(session) ? `<aside class="notice"><p><strong>An updated workout plan is ready.</strong> This workout keeps the exercises and targets you started with. Review and save it, even if partly done, then start a new workout to use the update.</p>${button('review', 'Review & save current workout', 'secondary')}</aside>` : ''}
-      <div class="workout-layout"><div>${demo(e)}</div><section class="instructions" aria-labelledby="exerciseTitle"><h2 id="exerciseTitle">${escape(e.name)}</h2>
-      <div class="target" aria-labelledby="targetLabel"><h3 id="targetLabel">${targetLabel}</h3><p id="targetValue">${e.phase === 'strength' && e.mode !== 'physio' ? `${e.sets} sets · ` : ''}${escape(e.target)}</p></div>
-      <ul class="steps">${e.steps.map(step => `<li>${escape(step)}</li>`).join('')}</ul>${counting ? `<p class="rep-explanation" id="repExplanation"><strong>${escape(counting.label)}:</strong> ${escape(counting.text)}</p>` : ''}${e.mode === 'physio' ? '<p class="physio-note small">Use your physio’s dose and counting method. Mark Done after completing it. Counting reps here is optional.</p>' : ''}
-      <p class="set-label">${e.mode === 'physio' ? 'Prescribed exercise' : `${side}Set ${rec.set} of ${e.sets}`}${e.skipped ? ' · Skipped' : rec.done ? ' · Saved ✓' : ''}</p>
+
+      <div class="workout-layout"><div>${demo(e)}</div><section class="instructions" aria-labelledby="exerciseTitle"><h2 id="exerciseTitle">${escape(e.name)}</h2>${e.sides ? `<p class="exercise-side" id="exerciseSide">${recordSide(e, rec)}</p>` : e.id === 'butterfly' ? '<p class="exercise-side" id="exerciseSide">Both legs together</p>' : ''}
+      <div class="target" aria-labelledby="targetLabel"><h3 id="targetLabel">${targetLabel}</h3><p id="targetValue">${setSummary(e)} · ${escape(e.target)}</p></div>
+      <ul class="steps">${e.steps.map(step => `<li>${escape(step)}</li>`).join('')}</ul>${counting ? `<p class="rep-explanation" id="repExplanation"><strong>${escape(counting.label)}:</strong> ${escape(counting.text)}</p>` : ''}
+      <p class="set-label">${e.mode === 'physio' ? 'Exercise' : `${side}Set ${rec.set} of ${e.sets}`}${e.skipped ? ' · Skipped' : rec.done ? ' · Saved ✓' : ''}</p>
       <div class="rep-control">${button('rep-minus', '−', '', 'id="repMinus" aria-label="Decrease count"')}<div class="rep-number"><label for="repValue">${units}</label><input id="repValue" type="number" inputmode="numeric" min="${e.mode === 'physio' ? 0 : 1}" max="${e.mode === 'time' ? 3600 : 999}" value="${rec.value}" ${counting ? 'aria-describedby="repExplanation"' : ''}></div>${button('rep-plus', '+', '', 'id="repPlus" aria-label="Increase count"')}</div>
       ${rec.done ? button(nextIndex >= 0 ? 'next-record' : 'next', nextIndex >= 0 ? 'Next set / side' : 'Next exercise', 'done-button full', 'id="nextRecord"') : button('done', e.mode === 'physio' ? 'Done' : 'Set done', 'done-button full', 'id="setDone"')}
-      ${e.mode === 'time' || e.mode === 'holds' ? `<div class="timer-inline"><strong>${e.mode === 'time' ? 'Movement timer' : 'Hold timer · 5 sec each'}</strong>${button('hold-timer', 'Start timer', 'secondary')}</div>` : ''}
+      ${e.mode === 'time' || e.mode === 'holds' ? `<div class="timer-inline"><strong>${e.mode === 'holds' ? `Hold timer · ${e.seconds} sec each` : e.phase === 'cooldown' ? 'Hold timer' : 'Movement timer'}</strong>${button('hold-timer', e.phase === 'cooldown' ? 'Start hold timer' : 'Start timer', 'secondary')}</div>` : ''}
       </section></div>
       <nav class="exercise-nav" aria-label="Exercise navigation">${button('previous', 'Previous', 'secondary', session.index === 0 ? 'disabled' : '')}${button('skip', 'Skip exercise', 'secondary')}${button('next', session.index === session.exercises.length - 1 ? 'Review workout' : 'Next exercise')}</nav>
       <details class="workout-options"><summary>Sets, comfort & workout stages</summary>
       ${e.phase === 'strength' ? '<p class="hint">60-second rest starts automatically after completion.</p>' : ''}
       <div class="record-picker" aria-label="Choose a set to view or correct">${e.records.map((r, i) => button('record', `${r.done ? '✓ ' : ''}${r.side === 'both' ? 'Set ' : recordSide(e, r) + ' · '}${r.set}`, `secondary ${r.done ? 'record-done' : ''} ${i === e.cursor ? 'selected' : ''}`, `data-index="${i}" aria-pressed="${i === e.cursor}"`)).join('')}</div>
-      <div class="set-tools">${rec.done ? button('undo', 'Undo completion', 'secondary') : ''}${e.phase === 'strength' && e.mode !== 'physio' && !e.setsBySide && e.sets < 3 ? button('add-set', 'Add a third set', 'secondary') : ''}${button('rest', 'Start a rest', 'secondary')}</div>
+      <div class="set-tools">${rec.done ? button('undo', 'Undo completion', 'secondary') : ''}${e.mode !== 'physio' && !e.setsBySide && e.sets < 3 ? button('add-set', e.sides ? 'Add a third set per side' : 'Add a third set', 'secondary') : ''}${button('rest', 'Start a rest', 'secondary')}</div>
       ${e.easier ? `<p class="hint">${escape(e.easier)}</p>` : ''}
       <div class="phase-jump" aria-label="Workout stages">${Object.entries(phaseNames).map(([key, label]) => button('phase', label, `secondary ${e.phase === key ? 'active' : ''}`, `data-phase="${key}"`)).join('')}${button('review', 'Finish / review', 'secondary')}</div></details>
       <p class="save-line">${store.warning ? 'Changes are in memory only. Download a backup.' : 'Saved on this device as you go.'}</p>`;
   }
   function review(session) {
+    if (updatedPlanAvailable(session)) return updatePlanView(session);
     const done = completeCount(session);
     return `<h1>Review your workout</h1><p>${escape(session.title)}</p>${status()}<p><strong>${done} of ${session.exercises.length} exercises completed.</strong> You can save a partial workout.</p>
       <ul class="review-list">${session.exercises.map((e, i) => `<li><div><strong>${escape(e.name)}</strong><small>${phaseNames[e.phase]} · ${e.skipped ? 'Skipped' : e.records.every(r => r.done) ? 'Done' : `${e.records.filter(r => r.done).length} of ${e.records.length} entries done`}</small></div>${button('go-exercise', 'View / edit', 'secondary', `data-index="${i}"`)}</li>`).join('')}</ul>
@@ -220,7 +253,7 @@
   function history() {
     const logs = [...state().history].sort((a, b) => b.finishedAt.localeCompare(a.finishedAt));
     return `<div class="history-layout"><h1>History & Backup</h1>${status()}<p>${logs.length} saved ${logs.length === 1 ? 'session' : 'sessions'} · walking this week: ${weeklyMinutes()} minutes</p>
-      ${logs.length ? `<div class="history-list">${logs.map(h => h.kind === 'walk' ? `<article class="history-row"><h2>Walk · ${h.minutes} minutes</h2><p>${escape(formatDate(h.date))}</p></article>` : `<article class="history-row"><details><summary><span>${escape(h.title)}</span><span class="small">${escape(formatDate(h.finishedAt))} · ${h.partial ? 'Partial' : 'Complete'}</span></summary><div class="history-detail"><p>${completeCount(h)} of ${h.exercises.length} exercises done.</p><ul class="plain-list">${h.exercises.map(e => `<li><strong>${escape(e.name)}</strong>: ${e.skipped ? 'Skipped; ' : ''}${e.records.map(r => `${r.side !== 'both' ? recordSide(e, r) + ' · ' : ''}${e.mode === 'physio' ? (r.value ? r.value + ' counted reps · ' : '') + (r.done ? 'prescribed exercise done' : 'not done') : `set ${r.set}: ${r.value} ${e.mode === 'time' ? 'sec' : e.mode === 'holds' ? 'holds' : 'reps'}${r.done ? ' ✓' : ' (not done)'}`}`).map(escape).join('; ')}</li>`).join('')}</ul>${h.notes ? `<p>Notes: ${escape(h.notes)}</p>` : ''}</div></details></article>`).join('')}</div>` : '<p class="notice">No saved workouts yet. Your first workout or walk will appear here.</p>'}
+      ${logs.length ? `<div class="history-list">${logs.map(h => h.kind === 'walk' ? `<article class="history-row"><h2>Walk · ${h.minutes} minutes</h2><p>${escape(formatDate(h.date))}</p></article>` : `<article class="history-row"><details><summary><span>${escape(h.title)}</span><span class="small">${escape(formatDate(h.finishedAt))} · ${h.partial ? 'Partial' : 'Complete'}</span></summary><div class="history-detail"><p>${completeCount(h)} of ${h.exercises.length} exercises done.</p><ul class="plain-list">${h.exercises.map(e => `<li><strong>${escape(e.name)}</strong>: ${e.skipped ? 'Skipped; ' : ''}${e.records.map(r => `${r.side !== 'both' ? recordSide(e, r) + ' · ' : ''}${e.mode === 'physio' ? (r.value ? r.value + ' counted reps · ' : '') + (r.done ? 'exercise done' : 'not done') : `set ${r.set}: ${r.value} ${e.mode === 'time' ? 'sec' : e.mode === 'holds' ? 'holds' : 'reps'}${r.done ? ' ✓' : ' (not done)'}`}`).map(escape).join('; ')}</li>`).join('')}</ul>${h.notes ? `<p>Notes: ${escape(h.notes)}</p>` : ''}</div></details></article>`).join('')}</div>` : '<p class="notice">No saved workouts yet. Your first workout or walk will appear here.</p>'}
       <section class="backup-section"><h2>Keep a backup</h2><p>Data stays in this browser on this device. It does not automatically sync. Clearing browser data, using private browsing, or changing devices can remove access to these records.</p><p>Download a backup regularly and keep the file somewhere you can find it.</p>${button('export', 'Download backup')}
       <label class="restore-label" for="restoreFile">Restore a Dad’s workouts backup</label><p class="small muted">Restore into Dad’s app with empty history and drafts. It will not change the other workout app. Imported timers stay off.</p><input id="restoreFile" class="restore-input" type="file" accept="application/json,.json"><p id="backupStatus" class="status" role="status"></p></section>
       <section class="backup-section"><h2>Walking goal</h2><label for="weeklyGoal" class="inline-label">Minutes per week</label><input id="weeklyGoal" type="number" min="5" max="1500" step="5" value="${state().settings.walkGoal}"><p class="small muted">Start with what is comfortable. Build toward 150 minutes of moderate walking weekly. The app never increases this automatically.</p>${button('save-goal', 'Save walking goal', 'secondary')}</section><p class="data-note"><a href="assets/SOURCES.md">Illustration notes & sources</a></p></div>`;
@@ -254,11 +287,10 @@
     else $('main').innerHTML = home();
     if ($('demoImage')) {
       const img = $('demoImage');
-      img.addEventListener('error', () => { $('demoFailure').hidden = false; if ($('demoButton')) $('demoButton').disabled = true; });
+      img.addEventListener('error', () => { $('demoFailure').hidden = false; if ($('demoButton')) { $('demoButton').disabled = true; delete $('demoButton').dataset.completionLocked; } });
     }
-    protectCompletionTap();
+    storageNotice(); renderTimer(); protectCompletionTap();
     if (focused && $(focused)) ($(focused).disabled ? $('main') : $(focused)).focus({ preventScroll: true });
-    storageNotice(); renderTimer();
   }
   function navigateExercise(index) {
     const { session } = current(); if (!session) return;
@@ -300,6 +332,7 @@
   }
   const actions = {
     'start-workout': el => startWorkout(el.dataset.id),
+    'update-workout': el => updateWorkout(el.dataset.id),
     plan: el => { const panel = $(`plan-${el.dataset.id}`); panel.hidden = !panel.hidden; el.setAttribute('aria-expanded', !panel.hidden); },
     home: () => { location.hash = 'today'; },
     sound: enableSound,
@@ -326,7 +359,7 @@
     record: el => { current().exercise.cursor = Number(el.dataset.index); save(); render(); },
     'add-set': () => { const { exercise } = current(); if (exercise.sets >= 3 || exercise.mode === 'physio' || exercise.setsBySide) return; exercise.sets++; exercise.records.push(...makeRecords(exercise, exercise.sets)); save(); render(); },
     rest: () => { const { session, exercise } = current(); startTimer('rest', 60, 'Rest · ' + exercise.name, { sessionId: session.id, exerciseId: exercise.id }); },
-    'hold-timer': () => { const { session, exercise, record } = current(); startTimer('hold', exercise.mode === 'holds' ? exercise.seconds : record.value, 'Timer · ' + exercise.name, { sessionId: session.id, exerciseId: exercise.id }); },
+    'hold-timer': () => { const { session, exercise, record } = current(); startTimer('hold', exercise.mode === 'holds' ? exercise.seconds : record.value, 'Timer · ' + exercise.name + (record.side !== 'both' ? ' · ' + recordSide(exercise, record) : '') + ' · Set ' + record.set, { sessionId: session.id, exerciseId: exercise.id }); },
     'timer-pause': () => {
       const t = state().timer; if (!t) return;
       if (t.running) {
@@ -368,6 +401,7 @@
   document.addEventListener('click', async event => {
     if (event.target.closest('a[href="#main"]')) { event.preventDefault(); $('main').focus(); return; }
     const el = event.target.closest('button[data-action]'); if (!el || el.disabled) return;
+    if (performance.now() < completionReadyAt) return;
     feedback = ''; if ($('actionStatus')) $('actionStatus').hidden = true;
     try { await actions[el.dataset.action]?.(el); } catch (error) { message(error.message || 'This action could not be completed.'); }
   });

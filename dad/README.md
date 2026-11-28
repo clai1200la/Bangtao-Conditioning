@@ -14,17 +14,21 @@ Open `http://localhost:8765/dad/`. No package installation or build is required.
 
 ## Workouts
 
-Two full-body strength days with different emphases, each including warm-up and stretching cooldown. Two working sets are the starting draft; a third is optional for strength exercises other than bird dog. Bird dog uses the user-selected 10 reps with one arm/leg pair, followed by 10 with the other: exactly two sets and 20 reps total. Cat-cow, pelvic tilts and hamstring stretching retain the physiotherapist’s prescribed dose rather than assuming a count. Bird dog and bodyweight squats are included in both strength sessions. The cooldown uses butterfly, hamstring, calf and across-chest stretches; it no longer starts with an easy walk. Review butterfly and any future 90/90 hip stretch with the physiotherapist; 90/90 is not included in this plan.
+Two full-body strength days with different emphases, each including warm-up and stretching cooldown. Every exercise starts with two sets. One-sided exercises use two sets per side (four total), ordered left/right for round one, then left/right for round two. Bird dog uses 10 reps for each arm/leg pair per round, for 40 reps total. A third set can be added; for one-sided work, that adds one set per side.
 
-Review new exercise choices with the physiotherapist, especially shoulder loading, knee-bending range, bridges and prone work. Keep cat-cow gentle. The deeper squat drawing is an example, not a required depth; use a comfortable range and optional counter support. The pelvic-tilt close-up highlights lower-back contact with the mat while hips stay down. The shoulder-blade lift keeps the chest down. The outward shoulder hold uses pressure from the back of the hand, not an elbow push or an overhead press.
+The cooldown is butterfly, seated hamstring, calf and across-chest shoulder stretches. All start at 30 seconds per hold, with an adjustable hold timer. Butterfly stretches both legs together for two holds total. Hamstring, calf and shoulder stretches have two holds per side, four total. Cat-cow and pelvic tilts start at two sets of six gentle reps. Targets can be changed in `workouts.js`.
+
+Use comfortable movements and stop painful exercises. The deeper squat drawing is an example, not a required depth; optional counter support is available. The pelvic-tilt close-up highlights lower-back contact with the mat while hips stay down. The shoulder-blade lift keeps the chest down. The outward shoulder hold uses pressure from the back of the hand.
+
+The 30-second stretch timer and two-hold starting plan are based on general stretching guidance from [Mayo Clinic](https://www.mayoclinic.org/healthy-lifestyle/fitness/in-depth/stretching/art-20546848) (about 30 seconds, repeat both sides 2–4 times) and [Alberta Health](https://myhealth.alberta.ca/health/tests-treatments/pages/conditions.aspx?hwid=ta1694) (15–30 seconds, 2–4 repeats per side). This is a general starting plan, not evidence that this dose is optimal for this individual. Shorten a hold if needed; use mild tension, not pain.
 
 Walks can be timed or logged afterward. The adjustable starting goal is 50 minutes weekly (five 10-minute walks); shorter walks are fine. The longer-term general target is 150 moderate-intensity minutes weekly, built toward as comfortable. No automatic progression or GPS is used.
 
 Change exercise content in `workouts.js`. A session snapshots its exercises when started, so later definition changes do not rewrite drafts or history.
 
-If a saved draft uses the older exercise plan, a notice offers **Review & save current workout**. Save that workout, even if partial, then start a new workout to use the updated plan. Existing records are never silently relabeled as different exercises.
+If a saved draft uses an older plan, both workout and review routes show **Use updated workout** instead of presenting the old routine as the current plan. This button saves an unchanged copy of the existing exercise records to History, marked partial when appropriate, and starts a fresh updated workout in one storage write. It never relabels old sets as different exercises. The switch is explicit; loading a page never rewrites saved data.
 
-Each exercise explains a complete rep, hold or step, including how to count sides. A separate target area shows the saved prescription; “Your reps,” “Your holds” or “Your seconds” records the amount completed. Editing that count does not change the target. Counting guidance also appears in existing drafts without rewriting their saved records or prescribed dose.
+Each exercise explains a complete rep or hold and how to count sides. A separate target area shows the plan; “Your reps,” “Your holds” or “Your seconds” records the amount completed. Editing that count does not change the target. All static stretches show a hold timer and the current set/side.
 
 ## Data
 

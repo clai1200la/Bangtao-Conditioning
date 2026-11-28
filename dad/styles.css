@@ -9,3 +9,5 @@
 
 .target{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 16px;padding:10px 14px;background:var(--soft);border-left:4px solid var(--green);border-radius:6px;margin:12px 0 16px}.target h3{font-size:1rem;line-height:1.35;margin:0}.target p{font-size:1.1rem;line-height:1.35;margin:0}.rep-explanation{font-size:1rem;line-height:1.4;margin:0 0 16px}.rep-number label{font-weight:700;margin:2px 0 3px}
 @media(min-width:761px){.target{margin-bottom:12px}.steps li{margin-bottom:6px}.rep-explanation{margin-bottom:12px}.set-label{margin-top:10px}.exercise-nav{margin-top:10px}}
+
+.exercise-side{font-size:1.15rem;font-weight:750;color:var(--green);margin:0 0 10px;line-height:1.35}

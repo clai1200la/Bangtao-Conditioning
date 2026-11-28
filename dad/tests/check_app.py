@@ -77,6 +77,8 @@ with sync_playwright() as p:
     expect(page.locator('#timerCount')).to_have_text('02:00')
     act(page, 'timer-dismiss')
     act(page, 'done')
+    expect(page.locator('.set-label')).to_contain_text('Set 2 of 2')
+    act(page, 'done')
     expect(page.locator('#exerciseTitle')).to_have_text('Shoulder rolls')
     media_loaded(page)
     expect(page.locator('#demoStep')).to_have_text('Lift shoulders toward your ears')
@@ -143,13 +145,16 @@ with sync_playwright() as p:
     expect(page.locator('#exerciseTitle')).to_have_text('Gentle butterfly stretch')
     act(page, 'next')
     expect(page.locator('#exerciseTitle')).to_have_text('Hamstring stretch')
-    expect(page.locator('.physio-note')).to_contain_text('physio’s dose')
-    assert page.locator('[data-action="hold-timer"]').count() == 0
+    expect(page.locator('#exerciseSide')).to_have_text('Left leg')
+    expect(page.locator('#targetValue')).to_contain_text('2 sets per side · 4 sets total')
+    act(page, 'hold-timer')
+    expect(page.locator('#timerCount')).to_have_text('00:30')
+    act(page, 'timer-dismiss')
     act(page, 'next')
     expect(page.locator('#exerciseTitle')).to_have_text('Calf stretch')
     act(page, 'hold-timer')
-    expect(page.locator('#timerCount')).to_have_text('00:20')
-    page.evaluate('window.testOffset+=21000')
+    expect(page.locator('#timerCount')).to_have_text('00:30')
+    page.evaluate('window.testOffset+=31000')
     expect(page.locator('#timerLabel')).to_have_text('Hold complete')
     assert not read(page)['drafts']['a']['exercises'][14]['records'][0]['done']
     options(page)
@@ -211,9 +216,19 @@ with sync_playwright() as p:
         while page.locator('#exerciseTitle').count():
             media_loaded(page)
             exercise = page.evaluate('(which)=>DadStore.state.drafts[which].exercises[DadStore.state.drafts[which].index]', which)
+            assert exercise['sets'] >= 2
+            assert len(exercise['records']) == exercise['sets'] * (2 if exercise.get('sides') else 1)
+            assert 'prescribed' not in page.locator('#main').inner_text().lower()
+            if exercise['phase'] == 'cooldown':
+                assert exercise['mode'] == 'time' and exercise['seconds'] == 30
+                for r in exercise['records']:
+                    assert r['value'] == 30
+                act(page, 'hold-timer')
+                expect(page.locator('#timerCount')).to_have_text('00:30')
+                act(page, 'timer-dismiss')
             if exercise['id'] == 'birddog':
                 assert exercise['mode'] == 'reps' and exercise['sets'] == 2
-                assert [(r['set'], r['side'], r['value']) for r in exercise['records']] == [(1, 'left', 10), (2, 'right', 10)]
+                assert [(r['set'], r['side'], r['value']) for r in exercise['records']] == [(1, 'left', 10), (1, 'right', 10), (2, 'left', 10), (2, 'right', 10)]
                 expect(page.locator('.set-label')).to_contain_text('Left arm + right leg')
                 page.screenshot(path=str(ARTIFACTS / 'bird-dog-ipad.png'), full_page=True)
             previous_index = read(page)['drafts'][which]['index']
@@ -230,6 +245,36 @@ with sync_playwright() as p:
         expect(page.locator('h1')).to_have_text('History & Backup')
         assert not read(page)['history'][-1]['partial']
     assert len(read(page)['history']) == 2
+    originals_unchanged(page)
+    ctx.close()
+
+    # Older Day A records stay untouched until an explicit one-tap plan update.
+    ctx = context(browser)
+    page = ctx.new_page()
+    start(page)
+    page.evaluate("""() => {
+      const s=DadStore.state.drafts.a, e=s.exercises.find(e=>e.id==='butterfly');
+      Object.assign(e,{id:'walkout',name:'Easy walk',seconds:60,sets:1,target:'1 easy minute',
+        media:{sheet:'warmup',row:0,still:true},steps:['Walk slowly.']});
+      e.records=[{...e.records[0],value:60}];
+      s.exercises[0].records[0].done=true; s.exercises[0].records[0].value=89;
+      s.notes='Keep my completed work'; DadStore.save();
+    }""")
+    old = read(page)['drafts']['a']
+    raw = page.evaluate('(k)=>localStorage.getItem(k)', KEY)
+    page.goto(URL + '#review-a')
+    expect(page.locator('h1')).to_have_text('Updated workout ready')
+    assert 'Easy walk' not in page.locator('#main').inner_text()
+    assert page.evaluate('(k)=>localStorage.getItem(k)', KEY) == raw
+    act(page, 'update-workout')
+    expect(page.locator('#exerciseTitle')).to_have_text('Easy marching')
+    updated = read(page)
+    assert updated['history'][0]['exercises'] == old['exercises']
+    assert updated['history'][0]['notes'] == old['notes']
+    assert updated['history'][0]['partial']
+    assert updated['drafts']['a']['id'] != old['id']
+    assert all(e['id'] != 'walkout' and e['sets'] >= 2 for e in updated['drafts']['a']['exercises'])
+    assert page.evaluate('DadStore.valid(DadStore.state)')
     originals_unchanged(page)
     ctx.close()
 

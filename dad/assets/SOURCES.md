@@ -17,15 +17,17 @@ The images are local WebP files. Most contain start/end positions arranged in tw
 - `hip.webp`: supported side leg raise with the counter beside the body, a visible gap under the raised foot and an outward/upward movement arrow.
 - `isometric.webp`: outward shoulder hold with elbow at waist and back of hand at wall.
 - `birddog.webp`: hands-and-knees setup and opposite arm/leg reach. Text identifies each arm/leg pair; the picture shows an example side.
-- `cooldown.webp`: an example seated hamstring position, calf stretch and across-chest shoulder stretch. The actual prescribed hamstring version takes precedence over the example.
+- `cooldown.webp`: seated hamstring, calf and across-chest shoulder stretch positions. The app names the leg or arm for every set; the picture shows an example side.
 
-The images are instructional aids, not clinical validation of suitability or exact movement range. Follow the accompanying text and the physiotherapist’s instructions. Physiotherapy exercise doses that were not supplied remain unspecified in the app.
+The images are instructional aids, not clinical validation of suitability or exact movement range. Follow the accompanying text and use a comfortable range. Cooldown holds default to 30 seconds with two holds per side; butterfly uses both legs together. See the timing references below.
 
 Written exercise content was drafted with reference to:
 
 - [NHS home strength exercises](https://www.nhs.uk/live-well/exercise/strength-exercises/)
 - [AAOS spine conditioning guidance](https://www.orthoinfo.org/bodypart/back/spine-conditioning-program/)
 - [AAOS shoulder conditioning guidance](https://www.orthoinfo.org/bodypart/shoulder/rotator-cuff-and-shoulder-conditioning-program/)
+- [Mayo Clinic: a guide to basic stretches](https://www.mayoclinic.org/healthy-lifestyle/fitness/in-depth/stretching/art-20546848) — about 30-second holds, repeated on both sides 2–4 times.
+- [Alberta Health: flexibility and stretching](https://myhealth.alberta.ca/health/tests-treatments/pages/conditions.aspx?hwid=ta1694) — 15–30-second holds and 2–4 repeats per side.
 - [NHS walking guidance](https://www.nhs.uk/live-well/exercise/walking-for-health/)
 - [CDC older adult activity guidance](https://www.cdc.gov/physical-activity-basics/guidelines/older-adults.html)
 
