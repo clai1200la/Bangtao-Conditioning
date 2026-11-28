@@ -13,7 +13,7 @@
   const exercise = e => object(e) && id(e.id) && string(e.name, 100) && string(e.target, 300) &&
     ['warmup', 'strength', 'cooldown'].includes(e.phase) && ['reps', 'holds', 'time', 'physio'].includes(e.mode) &&
     integer(e.sets, 1, 10) && Array.isArray(e.steps) && e.steps.length <= 10 && e.steps.every(x => string(x, 500)) &&
-    (e.setsBySide === undefined || e.setsBySide === true && e.sides === true && e.sets === 2 && e.records?.length === 2 && e.records.every((r, i) => r.set === i + 1 && r.side === (i === 0 ? 'left' : 'right'))) &&
+    (e.setsBySide === undefined || e.setsBySide === true && e.sides === true && e.sets === 2 && Array.isArray(e.records) && e.records.length === 2 && e.records.every((r, i) => object(r) && r.set === i + 1 && r.side === (i === 0 ? 'left' : 'right'))) &&
     (!e.easier || string(e.easier)) && (!e.search || string(e.search, 200)) &&
     (!e.seconds || integer(e.seconds, 1, 3600)) && (!e.reps || integer(e.reps, 1, 999)) &&
     object(e.media) && ['strength', 'warmup', 'floor', 'shoulders', 'cooldown', 'isometric', 'birddog', 'hip', 'rolls', 'pelvic', 'squat', 'butterfly'].includes(e.media.sheet) &&
